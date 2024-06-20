@@ -1,16 +1,16 @@
-export const isContinuous = (cards: number[]) => {
+export const isContinuous = (ranks: number[]) => {
     const straights = "0,1,2,3,4,5,6,7,8,9,10,11,12";
 
-    return straights.includes(cards.sort().join(","));
+    return straights.includes(ranks.sort().join(","));
 };
 
-export const isLowStraight = (cards: number[]) => {
+export const isLowStraight = (ranks: number[]) => {
     const straights = "0,1,2,3,4,5,6,7,8,9,10,11,12";
 
-    cards.sort();
+    ranks.sort();
 
-    const maxCard = cards[cards.length - 1];
-    const remainCards = cards.slice(0, cards.length - 1);
+    const maxCard = ranks[ranks.length - 1];
+    const remainCards = ranks.slice(0, ranks.length - 1);
 
     return maxCard === 12 && straights.includes(remainCards.join(","));
 };

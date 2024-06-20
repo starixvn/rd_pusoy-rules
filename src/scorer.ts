@@ -1,4 +1,4 @@
-import { HAND_TYPE, ROYAL_STRAIGHT } from "./consts";
+import { HandType, ROYAL_STRAIGHT } from "./consts";
 import {
     isContinuous,
     isDistinct,
@@ -10,25 +10,29 @@ import {
     isTwoPair,
 } from "./hand-type-checker";
 import { countSameRank, statisticCard } from "./statistic-card";
-import { HandScore } from "./types";
+import { SegmentScore } from "./types";
 
-export const calculateHandScore = (cards: number[]): HandScore => {
+export const calculateSegmentScore = (cards: number[]): SegmentScore => {
     const { rankMap, suitSet } = statisticCard(cards);
     if (isDistinct(cards, rankMap)) {
         const rankSorted = Array.from(rankMap.keys()).sort();
-        const lowStraightCards = isLowStraight(cards);
+        const lowStraightCards = isLowStraight(rankSorted);
 
-        if (cards.length === 5 && isContinuous(cards) && lowStraightCards) {
+        if (
+            cards.length === 5 &&
+            isContinuous(rankSorted) &&
+            lowStraightCards
+        ) {
             const maxRank = lowStraightCards
                 ? rankSorted[rankSorted.length - 2]
                 : rankSorted[rankSorted.length - 1];
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
 
-            let typeScore = HAND_TYPE.STRAIGHT;
+            let typeScore = HandType.Straight;
             if (rankSorted.join(",") === ROYAL_STRAIGHT && suitSet.size === 1) {
-                typeScore = HAND_TYPE.ROYAL_FLUSH;
+                typeScore = HandType.RoyalFlush;
             } else if (suitSet.size === 1) {
-                typeScore = HAND_TYPE.STRAIGHT_FLUSH;
+                typeScore = HandType.StraightFlush;
             }
 
             return {
@@ -43,8 +47,8 @@ export const calculateHandScore = (cards: number[]): HandScore => {
             return {
                 typeScore:
                     suitSet.size === 1 && cards.length === 5
-                        ? HAND_TYPE.FLUSH
-                        : HAND_TYPE.HIGH_CARD,
+                        ? HandType.Flush
+                        : HandType.HighCard,
                 rankScore: highCardBaseScore(rankSorted, 5, 13),
                 suitScore: maxSuit,
             };
@@ -65,7 +69,7 @@ export const calculateHandScore = (cards: number[]): HandScore => {
             const handScore = highCardBaseScore([...pairs, ...single], 5, 13);
 
             return {
-                typeScore: twoPairs ? HAND_TYPE.TWO_PAIR : HAND_TYPE.ONE_PAIR,
+                typeScore: twoPairs ? HandType.TwoPairs : HandType.OnePair,
                 rankScore: handScore,
                 suitScore: maxSuit,
             };
@@ -77,8 +81,8 @@ export const calculateHandScore = (cards: number[]): HandScore => {
 
             return {
                 typeScore: fullHouse
-                    ? HAND_TYPE.FULL_HOUSE
-                    : HAND_TYPE.THREE_OF_A_KIND,
+                    ? HandType.FullHouse
+                    : HandType.ThreeOfAKind,
                 rankScore: maxRank,
                 suitScore: maxSuit,
             };
@@ -88,7 +92,7 @@ export const calculateHandScore = (cards: number[]): HandScore => {
             const maxRank = getMax(quad);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
             return {
-                typeScore: HAND_TYPE.FOUR_OF_A_KIND,
+                typeScore: HandType.FourOfAKind,
                 rankScore: maxRank,
                 suitScore: maxSuit,
             };
@@ -99,6 +103,20 @@ export const calculateHandScore = (cards: number[]): HandScore => {
             suitScore: 0,
         };
     }
+};
+
+export const isLarger = (a: SegmentScore, b: SegmentScore): boolean => {
+    if (a.typeScore > b.typeScore) {
+        return true;
+    }
+    if (a.typeScore === b.typeScore && a.rankScore > b.rankScore) {
+        return true;
+    }
+    if (a.typeScore === b.typeScore && a.rankScore === b.rankScore) {
+        return a.suitScore > b.suitScore;
+    }
+
+    return false;
 };
 
 const highCardBaseScore = (ranks: number[], maxLevel: number, base: number) => {

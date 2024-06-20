@@ -1,14 +1,22 @@
-export const HAND_TYPE = {
-    HIGH_CARD: 1,
-    ONE_PAIR: 2,
-    TWO_PAIR: 3,
-    THREE_OF_A_KIND: 4,
-    STRAIGHT: 5,
-    FLUSH: 6,
-    FULL_HOUSE: 7,
-    FOUR_OF_A_KIND: 8,
-    STRAIGHT_FLUSH: 9,
-    ROYAL_FLUSH: 10,
-};
+export enum HandType {
+    HighCard = 1,
+    OnePair = 2,
+    TwoPairs = 3,
+    ThreeOfAKind = 4,
+    Straight = 5,
+    Flush = 6,
+    FullHouse = 7,
+    FourOfAKind = 8,
+    StraightFlush = 9,
+    RoyalFlush = 10,
+}
+
+export enum Natural {
+    ThreeStraights = "three_straight",
+    ThreeFlushes = "three_flushes",
+    Dragon = "dragon",
+    SuperDragon = "super_dragon",
+    SixPairs = "six_pairs",
+}
 
 export const ROYAL_STRAIGHT = "8,9,10,11,12";
