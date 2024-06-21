@@ -1,3 +1,5 @@
+import { accumulateItems } from "./map-helpers";
+
 export const countSameRank = (ranksMap: Map<number, number[]>) => {
     const sameRankCounter: Map<number, number[]> = new Map();
 
@@ -6,18 +8,6 @@ export const countSameRank = (ranksMap: Map<number, number[]>) => {
     });
 
     return sameRankCounter;
-};
-
-export const accumulateItems = (
-    map: Map<number, number[]>,
-    key: number,
-    value: number
-) => {
-    if (!map.has(key)) {
-        map.set(key, [value]);
-    } else {
-        map.get(key)?.push(value);
-    }
 };
 
 export const statisticCard = (cards: number[]) => {
@@ -32,12 +22,4 @@ export const statisticCard = (cards: number[]) => {
     });
 
     return { rankMap, suitSet };
-};
-
-export const countItems = (map: Map<number, number>, item: number) => {
-    if (!map.has(item)) {
-        map.set(item, 1);
-    } else {
-        map.set(item, (map.get(item) as number) + 1);
-    }
 };

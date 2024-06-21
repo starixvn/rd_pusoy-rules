@@ -19,7 +19,9 @@ export type Settlement = {
         [key: string]: number;
     };
     normalScore: Hand<number>;
-    pusoyScore: number;
+    pusoyScore: {
+        [key: string]: number;
+    };
     fullPusoyScore: number;
     sumScore: number;
 };

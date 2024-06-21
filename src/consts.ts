@@ -19,4 +19,10 @@ export enum Natural {
     SixPairs = "six_pairs",
 }
 
+export enum HandPosition {
+    Front = "front",
+    Middle = "middle",
+    Back = "back",
+}
+
 export const ROYAL_STRAIGHT = "8,9,10,11,12";

@@ -8,8 +8,8 @@ import {
     isOnePair,
     isThreeOfAKind,
     isTwoPair,
-} from "./hand-type-checker";
-import { countSameRank, statisticCard } from "./statistic-card";
+} from "./card-checker/hand-type-checker";
+import { countSameRank, statisticCard } from "./helper/statistic-card";
 import { SegmentScore } from "./types";
 
 export const calculateSegmentScore = (cards: number[]): SegmentScore => {
