@@ -1,7 +1,6 @@
-import { HandType, ROYAL_STRAIGHT } from "./consts";
+import { HandType, ROYAL_STRAIGHT } from "./const";
 import {
     isContinuous,
-    isDistinct,
     isFourOfAKind,
     isFullHouse,
     isLowStraight,
@@ -14,7 +13,7 @@ import { SegmentScore } from "./types";
 
 export const calculateSegmentScore = (cards: number[]): SegmentScore => {
     const { rankMap, suitSet } = statisticCard(cards);
-    if (isDistinct(cards, rankMap)) {
+    if (cards.length === rankMap.size) {
         const rankSorted = Array.from(rankMap.keys()).sort();
         const lowStraightCards = isLowStraight(rankSorted);
 
@@ -36,21 +35,21 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             }
 
             return {
-                typeScore,
-                rankScore: maxRank,
-                suitScore: maxSuit,
+                type: typeScore,
+                rank: maxRank,
+                suit: maxSuit,
             };
         } else {
             const maxRank = rankSorted[rankSorted.length - 1];
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
 
             return {
-                typeScore:
+                type:
                     suitSet.size === 1 && cards.length === 5
                         ? HandType.Flush
                         : HandType.HighCard,
-                rankScore: highCardBaseScore(rankSorted, 5, 13),
-                suitScore: maxSuit,
+                rank: highCardBaseScore(rankSorted, 5, 13),
+                suit: maxSuit,
             };
         }
     } else {
@@ -64,59 +63,43 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             let single = sameRankCounter.get(1) || [];
             single = single.sort();
             let pairs = sameRankCounter.get(2) || [];
-            let maxRank = getMax(pairs);
+            let maxRank = Math.max(...pairs);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
             const handScore = highCardBaseScore([...pairs, ...single], 5, 13);
 
             return {
-                typeScore: twoPairs ? HandType.TwoPairs : HandType.OnePair,
-                rankScore: handScore,
-                suitScore: maxSuit,
+                type: twoPairs ? HandType.TwoPairs : HandType.OnePair,
+                rank: handScore,
+                suit: maxSuit,
             };
         }
         if (threeOfAKind || fullHouse) {
             let trio = sameRankCounter.get(3) || [];
-            const maxRank = getMax(trio);
+            const maxRank = Math.max(...trio);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
 
             return {
-                typeScore: fullHouse
-                    ? HandType.FullHouse
-                    : HandType.ThreeOfAKind,
-                rankScore: maxRank,
-                suitScore: maxSuit,
+                type: fullHouse ? HandType.FullHouse : HandType.ThreeOfAKind,
+                rank: maxRank,
+                suit: maxSuit,
             };
         }
         if (isFourOfAKind(sameRankCounter)) {
             let quad = sameRankCounter.get(4) || [];
-            const maxRank = getMax(quad);
+            const maxRank = Math.max(...quad);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
             return {
-                typeScore: HandType.FourOfAKind,
-                rankScore: maxRank,
-                suitScore: maxSuit,
+                type: HandType.FourOfAKind,
+                rank: maxRank,
+                suit: maxSuit,
             };
         }
         return {
-            typeScore: -1,
-            rankScore: 0,
-            suitScore: 0,
+            type: HandType.Unknown,
+            rank: 0,
+            suit: 0,
         };
     }
-};
-
-export const isLarger = (a: SegmentScore, b: SegmentScore): boolean => {
-    if (a.typeScore > b.typeScore) {
-        return true;
-    }
-    if (a.typeScore === b.typeScore && a.rankScore > b.rankScore) {
-        return true;
-    }
-    if (a.typeScore === b.typeScore && a.rankScore === b.rankScore) {
-        return a.suitScore > b.suitScore;
-    }
-
-    return false;
 };
 
 const highCardBaseScore = (ranks: number[], maxLevel: number, base: number) => {
@@ -128,16 +111,11 @@ const highCardBaseScore = (ranks: number[], maxLevel: number, base: number) => {
     return result;
 };
 
-const getMax = (array: number[]) => {
-    array = array.sort();
-    return array[array.length - 1];
-};
-
 const getMaxSuitByMaxRank = (
     rankMap: Map<number, number[]>,
-    maxRank: number
+    maxRank: number,
 ) => {
     let suitsByMaxRank = rankMap.get(maxRank) || [0];
-    const maxSuit = getMax(suitsByMaxRank);
+    const maxSuit = Math.max(...suitsByMaxRank);
     return maxSuit;
 };

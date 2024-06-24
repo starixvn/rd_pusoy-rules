@@ -1,78 +1,100 @@
-import { HandType, Natural } from "../consts";
+import { HandType, NaturalDisplay, NaturalType } from "../const";
 import { isContinuous, isLowStraight } from "./hand-type-checker";
 import { countSameRank, statisticCard } from "../helper/statistic-card";
-import { Hand, SegmentScore } from "../types";
+import { Hand, NaturalScore, SegmentScore } from "../types";
 
 export const checkNatural = (
     hand: Hand<number[]>,
     handScore: Hand<SegmentScore>,
-    naturalConfig: Record<string, number>
-) => {
+    naturalConfig: Record<string, number>,
+): {
+    isNatural: boolean;
+    naturalScore: NaturalScore;
+} => {
     const cards = hand.front.concat(hand.middle).concat(hand.back);
-    const { rankMap, suitSet } = statisticCard(cards);
+    const { rankMap } = statisticCard(cards);
     const sameRankCounter = countSameRank(rankMap);
     const sortedRank = Array.from(rankMap.keys()).sort();
-    const dragon = isDragon(sortedRank);
 
     if (
-        naturalConfig.hasOwnProperty(Natural.Dragon) &&
-        naturalConfig.hasOwnProperty(Natural.SuperDragon) &&
-        dragon
-    ) {
-        return dragonBaseCheck(suitSet, naturalConfig);
-    }
-
-    if (
-        naturalConfig.hasOwnProperty(Natural.SixPairs) &&
-        sameRankCounter.get(2)?.length === 6
+        naturalConfig.hasOwnProperty(NaturalDisplay[NaturalType.Dragon]) &&
+        isContinuous(sortedRank)
     ) {
         return {
-            [Natural.SixPairs]: naturalConfig[Natural.SixPairs],
+            isNatural: true,
+            naturalScore: {
+                type: NaturalType.Dragon,
+                rank: 0,
+                suit: Math.max(...cards) % 4,
+            },
         };
     }
 
     if (
-        naturalConfig.hasOwnProperty(Natural.ThreeStraights) &&
-        handScore.back.typeScore === HandType.Straight &&
-        handScore.middle.typeScore === HandType.Straight &&
-        isContinuous(hand.front) &&
-        isLowStraight(sortedRank)
+        naturalConfig.hasOwnProperty(NaturalDisplay[NaturalType.SixPairs]) &&
+        (sameRankCounter.get(2)?.length === 6 ||
+            (sameRankCounter.get(3)?.length === 5 &&
+                sameRankCounter.get(2)?.length === 1) ||
+            (sameRankCounter.get(4)?.length ?? 0) * 4 +
+                (sameRankCounter.get(2)?.length ?? 0) * 2 ===
+                12)
     ) {
+        const maxCard = Math.max(
+            ...(sameRankCounter.get(2) ?? []),
+            ...(sameRankCounter.get(3) ?? []),
+            ...(sameRankCounter.get(4) ?? []),
+        );
+        const maxSuit = Math.max(...(rankMap.get(maxCard) ?? []));
         return {
-            [Natural.ThreeStraights]: naturalConfig[Natural.ThreeStraights],
+            isNatural: true,
+            naturalScore: {
+                type: NaturalType.SixPairs,
+                rank: maxCard,
+                suit: maxSuit,
+            },
         };
     }
 
     const { suitSet: frontSuitSet } = statisticCard(hand.front);
     if (
-        naturalConfig.hasOwnProperty(Natural.ThreeFlushes) &&
-        handScore.back.typeScore === HandType.Flush &&
-        handScore.middle.typeScore === HandType.Flush &&
+        naturalConfig.hasOwnProperty(
+            NaturalDisplay[NaturalType.ThreeFlushes],
+        ) &&
+        handScore.back.type === HandType.Flush &&
+        handScore.middle.type === HandType.Flush &&
         frontSuitSet.size === 1
     ) {
         return {
-            [Natural.ThreeFlushes]: naturalConfig[Natural.ThreeFlushes],
+            isNatural: true,
+            naturalScore: {
+                type: NaturalType.ThreeFlushes,
+                rank: 0,
+                suit: Math.max(...hand.front) % 4,
+            },
         };
     }
 
-    return {};
-};
-
-const dragonBaseCheck = (
-    suitSet: Set<number>,
-    naturalConfig: Record<string, number>
-) => {
-    if (suitSet.size === 1) {
+    if (
+        naturalConfig.hasOwnProperty(
+            NaturalDisplay[NaturalType.ThreeStraights],
+        ) &&
+        handScore.back.type === HandType.Straight &&
+        handScore.middle.type === HandType.Straight &&
+        isContinuous(hand.front) &&
+        isLowStraight(sortedRank)
+    ) {
         return {
-            [Natural.SuperDragon]: naturalConfig[Natural.SuperDragon],
+            isNatural: true,
+            naturalScore: {
+                type: NaturalType.ThreeStraights,
+                rank: 0,
+                suit: Math.max(...hand.front) % 4,
+            },
         };
     }
 
     return {
-        [Natural.Dragon]: naturalConfig[Natural.Dragon],
+        isNatural: false,
+        naturalScore: { type: NaturalType.Unknown, rank: 0, suit: 0 },
     };
-};
-
-const isDragon = (ranks: number[]) => {
-    return isContinuous(ranks);
 };

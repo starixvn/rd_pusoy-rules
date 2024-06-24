@@ -1,25 +1,34 @@
 import { settle } from "./settler";
 import { ScoreConfig } from "./types";
+import "./helper/map-helpers";
 
 const scoreConfig: ScoreConfig = {
-    normalScore: 1,
-    naturalScore: {
-        three_flushes: 3,
-        six_pairs: 6,
-        dragon: 12,
+    normal: 1,
+    natural: {
+        ThreeFlushes: 3,
+        SixPairs: 6,
+        Dragon: 12,
     },
-    crackScore: 6,
-    fullPusoyScore: 6,
-    pusoyScore: 3,
-    royaltyScore: {
-        "front.4": 3,
-        "middle.7": 2,
-        "middle.8": 8,
-        "middle.9": 10,
-        "middle.10": 20,
-        "back.8": 4,
-        "back.9": 5,
-        "back.10": 10,
+    crack: 6,
+    pusoy: {
+        partial: 3,
+        full: 6,
+    },
+    royalty: {
+        front: {
+            FourOfAKind: 3,
+        },
+        middle: {
+            FullHouse: 2,
+            FourOfAKind: 8,
+            StraightFlush: 10,
+            RoyalFlush: 20,
+        },
+        back: {
+            FourOfAKind: 4,
+            StraightFlush: 5,
+            RoyalFlush: 10,
+        },
     },
 };
 

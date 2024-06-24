@@ -1,39 +1,60 @@
-import { HandPosition } from "./consts";
+import {
+    HandType,
+    HandTypeDisplay,
+    NaturalDisplay,
+    NaturalType,
+} from "./const";
 import { isCrack } from "./card-checker/crack-checker";
-import { accumulateItems, extendMap } from "./helper/map-helpers";
 import { checkNatural } from "./card-checker/natural-checker";
-import { calculateSegmentScore, isLarger } from "./scorer";
-import { Hand, ScoreConfig, SegmentScore, Settlement } from "./types";
+import { calculateSegmentScore } from "./scorer";
+import {
+    CardCollectionScore,
+    Hand,
+    NaturalScore,
+    ScoreConfig,
+    SegmentScore,
+    Settlement,
+} from "./types";
+import { isLarger } from "./helper/card-collection-score";
 
 const initSettlement: Settlement = {
-    crackScore: 0,
-    fullPusoyScore: 0,
-    naturalScore: {},
-    normalScore: {
+    crack: {
+        isCrack: false,
+        score: 0,
+    },
+    natural: {},
+    normal: {
         front: 0,
         middle: 0,
         back: 0,
     },
-    pusoyScore: {},
-    royaltyScore: {},
-    sumScore: 0,
+    pusoy: {
+        full: 0,
+        partial: {},
+    },
+    royalty: {
+        front: {},
+        middle: {},
+        back: {},
+    },
+    sum: 0,
 };
 
 const initHandScore: Hand<SegmentScore> = {
     front: {
-        rankScore: 0,
-        suitScore: 0,
-        typeScore: 0,
+        rank: 0,
+        suit: 0,
+        type: 0,
     },
     middle: {
-        rankScore: 0,
-        suitScore: 0,
-        typeScore: 0,
+        rank: 0,
+        suit: 0,
+        type: 0,
     },
     back: {
-        rankScore: 0,
-        suitScore: 0,
-        typeScore: 0,
+        rank: 0,
+        suit: 0,
+        type: 0,
     },
 };
 
@@ -43,11 +64,19 @@ const initNormalScore = {
     back: 0,
 };
 
+const initRoyaltyScore = {
+    front: {},
+    middle: {},
+    back: {},
+};
+
 export const settle = (
     players: Hand<number[]>[],
-    scoreConfig: ScoreConfig
+    scoreConfig: ScoreConfig,
 ): Map<number, Settlement> => {
-    const result: Map<number, Settlement> = new Map();
+    let result: Map<number, Settlement> = new Map();
+    const crackPlayers: Set<number> = new Set();
+    let naturalPlayers: Map<number, NaturalScore> = new Map();
     const compareHandPlayers: Map<number, Hand<SegmentScore>> = new Map();
     for (let i = 0; i < players.length; i++) {
         const handScore: Hand<SegmentScore> = {
@@ -57,25 +86,18 @@ export const settle = (
         };
 
         if (isCrack(handScore)) {
-            result.set(i, {
-                ...initSettlement,
-                crackScore: -scoreConfig.crackScore * (players.length - 1),
-            });
+            crackPlayers.add(i);
 
             continue;
         }
 
-        const naturalCheckResult = checkNatural(
+        const { isNatural, naturalScore } = checkNatural(
             players[i],
             handScore,
-            scoreConfig.naturalScore
+            scoreConfig.natural,
         );
-
-        if (Object.keys(naturalCheckResult).length > 0) {
-            result.set(i, {
-                ...initSettlement,
-                naturalScore: naturalCheckResult as Record<string, number>,
-            });
+        if (isNatural) {
+            naturalPlayers.set(i, naturalScore);
 
             continue;
         }
@@ -83,14 +105,14 @@ export const settle = (
         compareHandPlayers.set(i, handScore);
     }
 
-    if (compareHandPlayers.size < 2) {
+    if (compareHandPlayers.size < 2 && compareHandPlayers.size > 0) {
         const remainPlayer = compareHandPlayers.entries().next();
         result.set(remainPlayer.value[0], {
             ...initSettlement,
         });
     }
 
-    const pusoyMap: Map<number, number[]> = new Map();
+    let pusoyMap: Map<number, number[]> = new Map();
     const compareHandPlayerIds = Array.from(compareHandPlayers.keys());
     for (let i = 0; i < compareHandPlayerIds.length - 1; i++) {
         for (let j = i + 1; j < compareHandPlayerIds.length; j++) {
@@ -116,114 +138,136 @@ export const settle = (
                 scoreConfig,
                 compareHandPlayerIds,
                 i,
-                j
+                j,
             );
-            extendMap(pusoyMap, pusoyMapTemp);
+            pusoyMap = pusoyMap.extend(pusoyMapTemp);
 
-            const { royaltyScore1, royaltyScore2, updateSegmentScore } =
-                calculateRoyalty(
-                    front,
-                    middle,
-                    back,
-                    player1,
-                    player2,
-                    scoreConfig
-                );
+            const { royaltyScore1, royaltyScore2 } = calculateRoyalty(
+                front,
+                middle,
+                back,
+                player1,
+                player2,
+                scoreConfig,
+            );
+
+            const updateSegmentScore: Record<string, number> = {};
+            Object.entries(royaltyScore1).forEach(([key, value]) => {
+                if (Object.keys(value).length > 0) {
+                    updateSegmentScore[key] = 0;
+                }
+            });
 
             const handScore1 = {
-                front: front * scoreConfig.normalScore,
-                middle: middle * scoreConfig.normalScore,
-                back: back * scoreConfig.normalScore,
+                front: front * scoreConfig.normal,
+                middle: middle * scoreConfig.normal,
+                back: back * scoreConfig.normal,
             };
 
             const handScore2 = {
-                front: -front * scoreConfig.normalScore,
-                middle: -middle * scoreConfig.normalScore,
-                back: -back * scoreConfig.normalScore,
+                front: -front * scoreConfig.normal,
+                middle: -middle * scoreConfig.normal,
+                back: -back * scoreConfig.normal,
             };
 
-            updateTempResult(
+            result = updateResultByCompareSegment(
                 result,
                 compareHandPlayerIds,
                 i,
                 pusoyScore1,
                 royaltyScore1,
                 handScore1,
-                updateSegmentScore
+                updateSegmentScore,
             );
 
-            updateTempResult(
+            result = updateResultByCompareSegment(
                 result,
                 compareHandPlayerIds,
                 j,
                 pusoyScore2,
                 royaltyScore2,
                 handScore2,
-                updateSegmentScore
+                updateSegmentScore,
             );
         }
     }
 
     for (const [key, value] of pusoyMap) {
         if (value.length > 1 && value.length === players.length - 1) {
-            result[key].fullPusoyScore =
-                scoreConfig.fullPusoyScore * value.length;
+            const oldResult = result.get(key);
+            result.set(key, {
+                ...oldResult!,
+                pusoy: {
+                    partial: {},
+                    full: scoreConfig.pusoy.full * value.length,
+                },
+            });
 
             for (const other of value) {
-                result[other].fullPusoyScore = -scoreConfig.fullPusoyScore;
-                result[other].pusoyScore = {
-                    ...result[other].pusoyScore,
-                    [key]: 0,
-                };
+                const oldResult = result.get(other);
+                result.set(other, {
+                    ...oldResult!,
+                    pusoy: {
+                        partial: {
+                            ...oldResult!.pusoy.partial,
+                            [key]: 0,
+                        },
+                        full: -scoreConfig.pusoy.full,
+                    },
+                });
             }
         }
     }
 
     for (let i = 0; i < players.length - 1; i++) {
         for (let j = i + 1; j < players.length; j++) {
-            result.set(i, {
-                ...(result.get(i) || initSettlement),
-                crackScore:
-                    result.get(i)?.crackScore ||
-                    0 +
-                        (result.get(j)?.crackScore || 0 < 0
-                            ? scoreConfig.crackScore
-                            : 0),
-                naturalScore: {
-                    ...result.get(i)?.naturalScore,
-                    ...subtractValue(result.get(j)?.naturalScore || {}),
-                },
-            });
+            const oldResult1: Settlement | undefined =
+                result.get(i) || undefined;
+            const oldResult2: Settlement | undefined =
+                result.get(j) || undefined;
+            const {
+                player1Result: naturalResult1,
+                player2Result: naturalResult2,
+            } = settleNatural(
+                scoreConfig.natural,
+                naturalPlayers.get(i),
+                naturalPlayers.get(j),
+            );
+            result = updateOrInsertSettleResult(
+                result,
+                oldResult1,
+                i,
+                crackPlayers,
+                scoreConfig,
+                naturalResult1,
+            );
 
-            result.set(j, {
-                ...(result.get(j) || initSettlement),
-                crackScore:
-                    result.get(j)?.crackScore ||
-                    0 +
-                        (result.get(i)?.crackScore || 0 < 0
-                            ? scoreConfig.crackScore
-                            : 0),
-                naturalScore: {
-                    ...result.get(j)?.naturalScore,
-                    ...subtractValue(result.get(i)?.naturalScore || {}),
-                },
-            });
+            result = updateOrInsertSettleResult(
+                result,
+                oldResult2,
+                j,
+                crackPlayers,
+                scoreConfig,
+                naturalResult2,
+            );
         }
     }
 
     for (const [key, value] of result) {
         result.set(key, {
             ...value,
-            sumScore:
-                value.crackScore +
-                value.fullPusoyScore +
-                Object.values(value.normalScore).reduce((a, b) => a + b, 0) +
-                Object.values(value.naturalScore).reduce(
+            sum:
+                value.crack.score +
+                value.pusoy.full +
+                Object.values(value.normal).reduce((a, b) => a + b, 0) +
+                Object.values(value.natural).reduce(
                     (a, b) => a + b * (players.length - 1),
-                    0
+                    0,
                 ) +
-                Object.values(value.pusoyScore).reduce((a, b) => a + b, 0) +
-                Object.values(value.royaltyScore).reduce((a, b) => a + b, 0),
+                Object.values(value.pusoy.partial).reduce((a, b) => a + b, 0) +
+                Object.values(value.royalty.front).reduce((a, b) => a + b, 0) +
+                Object.values(value.royalty.middle).reduce((a, b) => a + b, 0) +
+                Object.values(value.royalty.back).reduce((a, b) => a + b, 0),
         });
     }
 
@@ -239,44 +283,91 @@ const subtractValue = (object: Record<string, number>) => {
     return newObject;
 };
 
-const getRoyaltyScore = (
-    royaltyConfig: Record<string, number>,
-    position: HandPosition,
-    typeScore: number
-) => {
-    return royaltyConfig[`${position}.${typeScore}`] || undefined;
-};
+function updateOrInsertSettleResult(
+    resultMap: Map<number, Settlement>,
+    oldResult: Settlement | undefined,
+    i: number,
+    crackPlayers: Set<number>,
+    scoreConfig: ScoreConfig,
+    naturalResult1: Record<string, number>,
+) {
+    const newResult = { ...resultMap };
+    if (!oldResult) {
+        newResult.set(i, {
+            ...initSettlement,
+            crack: {
+                isCrack: crackPlayers.has(i),
+                score: crackPlayers.has(i) ? scoreConfig.crack : 0,
+            },
+            natural: naturalResult1,
+        });
+    }
+    newResult.set(i, {
+        ...oldResult!,
+        crack: {
+            ...oldResult!.crack,
+            score:
+                oldResult!.crack!.score +
+                (oldResult!.crack!.isCrack ? scoreConfig.crack : 0),
+        },
+        natural: {
+            ...oldResult!.natural,
+            ...naturalResult1,
+        },
+    });
 
-function updateTempResult(
-    tempResult: Map<number, Settlement>,
+    return newResult;
+}
+
+function updateResultByCompareSegment(
+    result: Map<number, Settlement>,
     compareHandPlayerIds: number[],
     i: number,
     pusoyScore: {},
-    royaltyScore: Record<string, number>,
+    royaltyScore: Hand<Record<string, number>>,
     handScore: { front: number; middle: number; back: number },
-    updateSegmentScore: Record<string, number>
+    updateSegmentScore: Record<string, number>,
 ) {
-    tempResult.set(compareHandPlayerIds[i], {
+    const newResult = { ...result };
+    const oldValue: Settlement | undefined = newResult.get(
+        compareHandPlayerIds[i],
+    );
+    newResult.set(compareHandPlayerIds[i], {
         ...initSettlement,
-        pusoyScore: {
-            ...tempResult.get(compareHandPlayerIds[i])?.pusoyScore,
-            ...pusoyScore,
+        pusoy: {
+            partial: {
+                ...oldValue?.pusoy?.partial,
+                ...pusoyScore,
+            },
+            full: 0,
         },
-        royaltyScore: {
-            ...tempResult.get(compareHandPlayerIds[i])?.royaltyScore,
-            ...royaltyScore,
+        royalty: {
+            front: {
+                ...oldValue?.royalty?.front,
+                ...royaltyScore.front,
+            },
+            middle: {
+                ...oldValue?.royalty?.middle,
+                ...royaltyScore.middle,
+            },
+            back: {
+                ...oldValue?.royalty?.back,
+                ...royaltyScore.back,
+            },
         },
-        normalScore: addNormalScore(
+        normal: addNormalScore(
             {
                 ...initNormalScore,
-                ...tempResult.get(compareHandPlayerIds[i])?.normalScore,
+                ...oldValue?.normal,
             },
             {
                 ...handScore,
                 ...updateSegmentScore,
-            }
+            },
         ),
     });
+
+    return newResult;
 }
 
 function calculatePusoy(
@@ -286,26 +377,25 @@ function calculatePusoy(
     scoreConfig: ScoreConfig,
     compareHandPlayerIds: number[],
     player1Position: number,
-    player2Position: number
+    player2Position: number,
 ) {
     const pusoyScore1 = {};
     const pusoyScore2 = {};
-    const pusoyMap: Map<number, number[]> = new Map();
+    let pusoyMap: Map<number, number[]> = new Map();
     const sum = front + middle + back;
     if (Math.abs(sum) === 3) {
-        const score = Math.floor(sum / Math.abs(sum)) * scoreConfig.pusoyScore;
+        const score =
+            Math.floor(sum / Math.abs(sum)) * scoreConfig.pusoy.partial;
 
         if (sum > 0) {
-            accumulateItems(
-                pusoyMap,
+            pusoyMap = pusoyMap.pushItem(
                 compareHandPlayerIds[player1Position],
-                compareHandPlayerIds[player2Position]
+                compareHandPlayerIds[player2Position],
             );
         } else {
-            accumulateItems(
-                pusoyMap,
+            pusoyMap = pusoyMap.pushItem(
                 compareHandPlayerIds[player2Position],
-                compareHandPlayerIds[player1Position]
+                compareHandPlayerIds[player1Position],
             );
         }
 
@@ -322,66 +412,63 @@ function calculateRoyalty(
     back: number,
     player1: Hand<SegmentScore>,
     player2: Hand<SegmentScore>,
-    scoreConfig: ScoreConfig
+    scoreConfig: ScoreConfig,
 ) {
-    const updateSegmentScore: Record<string, number> = {};
-    const royaltyScore1: Record<string, number> = {};
-    const royaltyScore2: Record<string, number> = {};
+    const royaltyScore1: Hand<Record<string, number>> = { ...initRoyaltyScore };
+    const royaltyScore2: Hand<Record<string, number>> = { ...initRoyaltyScore };
 
-    [
-        {
-            segmentScore: front,
-            position: HandPosition.Front,
-            player1Score: player1.front,
-            player2Score: player2.front,
-        },
-        {
-            segmentScore: middle,
-            position: HandPosition.Middle,
-            player1Score: player1.middle,
-            player2Score: player2.middle,
-        },
-        {
-            segmentScore: back,
-            position: HandPosition.Back,
-            player1Score: player1.back,
-            player2Score: player2.back,
-        },
-    ].forEach(({ segmentScore, position, player1Score, player2Score }) => {
-        if (segmentScore > 0) {
-            const royaltyScore = getRoyaltyScore(
-                scoreConfig.royaltyScore,
-                position,
-                player1Score.typeScore
-            );
-            if (royaltyScore !== undefined) {
-                royaltyScore1[`${royaltyScore}.${position}`] = royaltyScore;
-                royaltyScore2[`${royaltyScore}.${position}`] = -royaltyScore;
-                updateSegmentScore[position] = 0;
-            }
-        } else if (segmentScore < 0) {
-            const royaltyScore = getRoyaltyScore(
-                scoreConfig.royaltyScore,
-                position,
-                player2Score.typeScore
-            );
-            if (royaltyScore !== undefined) {
-                royaltyScore1[`${royaltyScore}.${position}`] = -royaltyScore;
-                royaltyScore2[`${royaltyScore}.${position}`] = royaltyScore;
-                updateSegmentScore[position] = 0;
-            }
-        }
-    });
+    royaltyScore1.front = getRoyaltyScore(
+        scoreConfig.royalty.front,
+        player1.front.type,
+        player2.front.type,
+        front,
+    );
+    royaltyScore2.front = subtractValue(royaltyScore1.front);
+
+    royaltyScore1.middle = getRoyaltyScore(
+        scoreConfig.royalty.middle,
+        player1.middle.type,
+        player2.middle.type,
+        middle,
+    );
+    royaltyScore2.middle = subtractValue(royaltyScore1.middle);
+
+    royaltyScore1.back = getRoyaltyScore(
+        scoreConfig.royalty.back,
+        player1.back.type,
+        player2.back.type,
+        back,
+    );
+    royaltyScore2.back = subtractValue(royaltyScore1.back);
 
     return {
         royaltyScore1,
         royaltyScore2,
-        updateSegmentScore,
     };
 }
+
+const getRoyaltyScore = (
+    royaltySegmentConfig: Record<string, number>,
+    player1: HandType,
+    player2: HandType,
+    segmentScore: number,
+): Record<string, number> => {
+    let royaltyScore: number | undefined = undefined;
+    let sign = 1;
+    let key = NaturalDisplay[player1];
+
+    if (segmentScore < 0) {
+        key = NaturalDisplay[player2];
+        sign = -1;
+    }
+
+    royaltyScore = royaltySegmentConfig[key];
+
+    return royaltyScore ? { key: royaltyScore * sign } : {};
+};
 function addNormalScore(
     a: { front: number; middle: number; back: number },
-    b: { front: number; middle: number; back: number }
+    b: { front: number; middle: number; back: number },
 ): Hand<number> {
     return {
         front: a.front + b.front,
@@ -389,3 +476,40 @@ function addNormalScore(
         back: a.back + b.back,
     };
 }
+
+const settleNatural = (
+    naturalScoreConfig: Record<string, number>,
+    player1: NaturalScore | undefined,
+    player2: NaturalScore | undefined,
+): {
+    player1Result: Record<string, number>;
+    player2Result: Record<string, number>;
+} => {
+    let player1Result = {};
+
+    if (!player1 && !player2) {
+        player1Result = isLarger(player1!, player2!)
+            ? {
+                  [NaturalDisplay[player1!.type]]:
+                      naturalScoreConfig[player1!.type],
+              }
+            : {
+                  [NaturalDisplay[player2!.type]]:
+                      naturalScoreConfig[player2!.type],
+              };
+    } else if (!player1) {
+        player1Result = {
+            [NaturalDisplay[player1!.type]]: naturalScoreConfig[player1!.type],
+        };
+    } else if (!player2) {
+        player1Result = {
+            [NaturalDisplay[player2!.type]]: naturalScoreConfig[player2!.type],
+        };
+    }
+
+    return {
+        player1Result,
+
+        player2Result: subtractValue(player1Result),
+    };
+};

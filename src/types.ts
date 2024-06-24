@@ -1,8 +1,15 @@
-export type SegmentScore = {
-    typeScore: number;
-    rankScore: number;
-    suitScore: number;
+import { isCrack } from "./card-checker/crack-checker";
+import { HandType, NaturalType } from "./const";
+
+export type CardCollectionScore<T> = {
+    type: T;
+    rank: number;
+    suit: number;
 };
+
+export type SegmentScore = CardCollectionScore<HandType>;
+
+export type NaturalScore = CardCollectionScore<NaturalType>;
 
 export type Hand<DataType> = {
     front: DataType;
@@ -11,30 +18,33 @@ export type Hand<DataType> = {
 };
 
 export type Settlement = {
-    crackScore: number;
-    naturalScore: {
+    crack: {
+        isCrack: boolean;
+        score: number;
+    };
+    natural: {
         [key: string]: number;
     };
-    royaltyScore: {
-        [key: string]: number;
+    royalty: Hand<Record<string, number>>;
+    normal: Hand<number>;
+    pusoy: {
+        partial: {
+            [key: string]: number;
+        };
+        full: number;
     };
-    normalScore: Hand<number>;
-    pusoyScore: {
-        [key: string]: number;
-    };
-    fullPusoyScore: number;
-    sumScore: number;
+    sum: number;
 };
 
 export type ScoreConfig = {
-    crackScore: number;
-    normalScore: number;
-    royaltyScore: {
+    crack: number;
+    normal: number;
+    royalty: Hand<Record<string, number>>;
+    natural: {
         [key: string]: number;
     };
-    naturalScore: {
-        [key: string]: number;
+    pusoy: {
+        partial: number;
+        full: number;
     };
-    pusoyScore: number;
-    fullPusoyScore: number;
 };

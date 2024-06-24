@@ -1,25 +1,20 @@
-export const isContinuous = (ranks: number[]) => {
+export const isContinuous = (sortedRanks: number[]) => {
     const straights = "0,1,2,3,4,5,6,7,8,9,10,11,12";
 
-    return straights.includes(ranks.sort().join(","));
+    return straights.includes(sortedRanks.join(","));
 };
 
-export const isLowStraight = (ranks: number[]) => {
+export const isLowStraight = (sortedRanks: number[]) => {
     const straights = "0,1,2,3,4,5,6,7,8,9,10,11,12";
 
-    ranks.sort();
+    const maxCard = sortedRanks[sortedRanks.length - 1];
+    if (maxCard !== 12) {
+        return false;
+    }
 
-    const maxCard = ranks[ranks.length - 1];
-    const remainCards = ranks.slice(0, ranks.length - 1);
+    const remainCards = sortedRanks.slice(0, sortedRanks.length - 1);
 
-    return maxCard === 12 && straights.includes(remainCards.join(","));
-};
-
-export const isDistinct = (
-    cards: number[],
-    ranksMap: Map<number, number[]>
-) => {
-    return cards.length === ranksMap.size;
+    return straights.includes(remainCards.join(","));
 };
 
 export const isOnePair = (sameRankCounter: Map<number, number[]>) => {
