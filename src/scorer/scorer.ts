@@ -1,4 +1,4 @@
-import { HandType, ROYAL_STRAIGHT } from "./const";
+import { HandType, ROYAL_STRAIGHT } from "../const";
 import {
     isContinuous,
     isFourOfAKind,
@@ -7,12 +7,11 @@ import {
     isOnePair,
     isThreeOfAKind,
     isTwoPair,
-} from "./card-checker/hand-type-checker";
-import { countSameRank, statisticCard } from "./helper/card-helpers";
-import { SegmentScore } from "./types";
-import { IScorer } from "./interfaces";
+} from "./hand-type-checker";
+import { countSameRank, statisticCard } from "../helper/card-helpers";
+import { SegmentScore } from "../types";
 
-const calculateSegmentScore = (cards: number[]): SegmentScore => {
+export const calculateSegmentScore = (cards: number[]): SegmentScore => {
     const { rankMap, suitSet } = statisticCard(cards);
     if (cards.length === rankMap.size) {
         const rankSorted = Array.from(rankMap.keys()).sort();
@@ -120,9 +119,3 @@ const getMaxSuitByMaxRank = (
     const maxSuit = Math.max(...suitsByMaxRank);
     return maxSuit;
 };
-
-const Scorer: IScorer<number[], SegmentScore> = {
-    calculateSegmentScore,
-};
-
-export default Scorer;

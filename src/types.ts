@@ -10,6 +10,11 @@ export type SegmentScore = CardCollectionScore<HandType>;
 
 export type NaturalScore = CardCollectionScore<NaturalType>;
 
+export type NaturalCheckResult = {
+    isNatural: boolean;
+    naturalScore: NaturalScore;
+};
+
 export type Hand<DataType> = {
     front: DataType;
     middle: DataType;

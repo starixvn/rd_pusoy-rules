@@ -29,4 +29,4 @@ Map.prototype.extend = function <K, V>(this: Map<K, V>, other: Map<K, V>) {
     return newMap;
 };
 
-export default global;
+export {};

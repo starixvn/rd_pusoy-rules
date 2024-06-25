@@ -51,6 +51,11 @@ const p3 = {
     back: [24, 25, 27, 16, 17],
 };
 
-const settleResult = settle([p1, p2, p3], scoreConfig, Scorer);
+const settleResult = settle(
+    [p1, p2, p3],
+    [false, false, false],
+    scoreConfig,
+    Scorer,
+);
 
 console.log(settleResult);
