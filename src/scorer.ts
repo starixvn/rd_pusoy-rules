@@ -8,10 +8,11 @@ import {
     isThreeOfAKind,
     isTwoPair,
 } from "./card-checker/hand-type-checker";
-import { countSameRank, statisticCard } from "./helper/statistic-card";
+import { countSameRank, statisticCard } from "./helper/card-helpers";
 import { SegmentScore } from "./types";
+import { IScorer } from "./interfaces";
 
-export const calculateSegmentScore = (cards: number[]): SegmentScore => {
+const calculateSegmentScore = (cards: number[]): SegmentScore => {
     const { rankMap, suitSet } = statisticCard(cards);
     if (cards.length === rankMap.size) {
         const rankSorted = Array.from(rankMap.keys()).sort();
@@ -62,8 +63,8 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
         if (onePair || twoPairs) {
             let single = sameRankCounter.get(1) || [];
             single = single.sort();
-            let pairs = sameRankCounter.get(2) || [];
-            let maxRank = Math.max(...pairs);
+            const pairs = sameRankCounter.get(2) || [];
+            const maxRank = Math.max(...pairs);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
             const handScore = highCardBaseScore([...pairs, ...single], 5, 13);
 
@@ -74,7 +75,7 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             };
         }
         if (threeOfAKind || fullHouse) {
-            let trio = sameRankCounter.get(3) || [];
+            const trio = sameRankCounter.get(3) || [];
             const maxRank = Math.max(...trio);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
 
@@ -85,7 +86,7 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             };
         }
         if (isFourOfAKind(sameRankCounter)) {
-            let quad = sameRankCounter.get(4) || [];
+            const quad = sameRankCounter.get(4) || [];
             const maxRank = Math.max(...quad);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
             return {
@@ -115,7 +116,13 @@ const getMaxSuitByMaxRank = (
     rankMap: Map<number, number[]>,
     maxRank: number,
 ) => {
-    let suitsByMaxRank = rankMap.get(maxRank) || [0];
+    const suitsByMaxRank = rankMap.get(maxRank) || [0];
     const maxSuit = Math.max(...suitsByMaxRank);
     return maxSuit;
 };
+
+const Scorer: IScorer<number[], SegmentScore> = {
+    calculateSegmentScore,
+};
+
+export default Scorer;

@@ -1,4 +1,3 @@
-import { isCrack } from "./card-checker/crack-checker";
 import { HandType, NaturalType } from "./const";
 
 export type CardCollectionScore<T> = {

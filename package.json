@@ -1,22 +1,24 @@
 {
-  "name": "pusoy-rules",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx src/index.ts"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@eslint/js": "^9.5.0",
-    "@types/eslint__js": "^8.42.3",
-    "@types/node": "^20.14.5",
-    "eslint": "^8.57.0",
-    "tsx": "^4.15.6",
-    "typescript": "^5.5.2",
-    "typescript-eslint": "^7.13.1"
-  }
+    "name": "pusoy-rules",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.ts",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "tsx src/index.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@eslint/js": "^9.5.0",
+        "@types/eslint__js": "^8.42.3",
+        "@types/node": "^20.14.5",
+        "eslint": "^8.57.0",
+        "tsc": "^2.0.4",
+        "tsx": "^4.15.7",
+        "typescript": "^5.5.2",
+        "typescript-eslint": "^7.14.1"
+    }
 }

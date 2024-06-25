@@ -1,6 +1,7 @@
 import { settle } from "./settler";
 import { ScoreConfig } from "./types";
 import "./helper/map-helpers";
+import Scorer from "./scorer";
 
 const scoreConfig: ScoreConfig = {
     normal: 1,
@@ -50,4 +51,6 @@ const p3 = {
     back: [24, 25, 27, 16, 17],
 };
 
-console.log(settle([p1, p2, p3], scoreConfig));
+const settleResult = settle([p1, p2, p3], scoreConfig, Scorer);
+
+console.log(settleResult);

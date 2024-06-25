@@ -1,6 +1,6 @@
 import { HandType, NaturalDisplay, NaturalType } from "../const";
 import { isContinuous, isLowStraight } from "./hand-type-checker";
-import { countSameRank, statisticCard } from "../helper/statistic-card";
+import { countSameRank, statisticCard } from "../helper/card-helpers";
 import { Hand, NaturalScore, SegmentScore } from "../types";
 
 export const checkNatural = (
@@ -17,7 +17,9 @@ export const checkNatural = (
     const sortedRank = Array.from(rankMap.keys()).sort();
 
     if (
-        naturalConfig.hasOwnProperty(NaturalDisplay[NaturalType.Dragon]) &&
+        Object.keys(naturalConfig).includes(
+            NaturalDisplay[NaturalType.Dragon],
+        ) &&
         isContinuous(sortedRank)
     ) {
         return {
@@ -31,7 +33,9 @@ export const checkNatural = (
     }
 
     if (
-        naturalConfig.hasOwnProperty(NaturalDisplay[NaturalType.SixPairs]) &&
+        Object.keys(naturalConfig).includes(
+            NaturalDisplay[NaturalType.SixPairs],
+        ) &&
         (sameRankCounter.get(2)?.length === 6 ||
             (sameRankCounter.get(3)?.length === 5 &&
                 sameRankCounter.get(2)?.length === 1) ||
@@ -57,7 +61,7 @@ export const checkNatural = (
 
     const { suitSet: frontSuitSet } = statisticCard(hand.front);
     if (
-        naturalConfig.hasOwnProperty(
+        Object.keys(naturalConfig).includes(
             NaturalDisplay[NaturalType.ThreeFlushes],
         ) &&
         handScore.back.type === HandType.Flush &&
@@ -75,7 +79,7 @@ export const checkNatural = (
     }
 
     if (
-        naturalConfig.hasOwnProperty(
+        Object.keys(naturalConfig).includes(
             NaturalDisplay[NaturalType.ThreeStraights],
         ) &&
         handScore.back.type === HandType.Straight &&

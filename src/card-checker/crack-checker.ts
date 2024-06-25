@@ -1,4 +1,4 @@
-import { isLarger } from "../helper/card-collection-score";
+import { isLarger } from "../helper/card-helpers";
 import { Hand, SegmentScore } from "../types";
 
 export const isCrack = (handScore: Hand<SegmentScore>): boolean => {
