@@ -10,11 +10,12 @@ import {
 } from "./hand-type-checker";
 import { countSameRank, statisticCard } from "../helper/card-helpers";
 import { SegmentScore } from "../types";
+import { getSortedKey } from "../helper/map-helpers";
 
 export const calculateSegmentScore = (cards: number[]): SegmentScore => {
     const { rankMap, suitSet } = statisticCard(cards);
     if (cards.length === rankMap.size) {
-        const rankSorted = rankMap.getSortedKey(true);
+        const rankSorted = getSortedKey(rankMap, true);
         const lowStraightCards = isLowStraight(rankSorted);
 
         if (

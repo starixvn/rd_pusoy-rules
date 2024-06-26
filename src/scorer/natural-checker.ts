@@ -2,6 +2,7 @@ import { HandType, NaturalDisplay, NaturalType } from "../const";
 import { isContinuous, isLowStraight } from "./hand-type-checker";
 import { countSameRank, statisticCard } from "../helper/card-helpers";
 import { Hand, NaturalScore, SegmentScore } from "../types";
+import { getSortedKey } from "../helper/map-helpers";
 
 export const checkNatural = (
     hand: Hand<number[]>,
@@ -14,7 +15,7 @@ export const checkNatural = (
     const cards = hand.front.concat(hand.middle).concat(hand.back);
     const { rankMap } = statisticCard(cards);
     const sameRankCounter = countSameRank(rankMap);
-    const sortedRank = rankMap.getSortedKey(true);
+    const sortedRank = getSortedKey(rankMap, true);
 
     if (
         Object.keys(naturalConfig).includes(
@@ -27,7 +28,7 @@ export const checkNatural = (
             naturalScore: {
                 type: NaturalType.Dragon,
                 rank: 0,
-                suit: Math.max(...cards) % 4,
+                suit: Math.max(...cards),
             },
         };
     }
@@ -48,7 +49,7 @@ export const checkNatural = (
             ...(sameRankCounter.get(3) ?? []),
             ...(sameRankCounter.get(4) ?? []),
         );
-        const maxSuit = Math.max(...(rankMap.get(maxCard) ?? []));
+        const maxSuit = Math.max(...rankMap.get(maxCard)!);
         return {
             isNatural: true,
             naturalScore: {
@@ -64,35 +65,41 @@ export const checkNatural = (
         Object.keys(naturalConfig).includes(
             NaturalDisplay[NaturalType.ThreeFlushes],
         ) &&
-        handScore.back.type === HandType.Flush &&
-        handScore.middle.type === HandType.Flush &&
+        (handScore.back.type === HandType.Flush ||
+            handScore.back.type === HandType.StraightFlush ||
+            handScore.back.type === HandType.RoyalFlush) &&
+        (handScore.middle.type === HandType.Flush ||
+            handScore.middle.type === HandType.StraightFlush ||
+            handScore.middle.type === HandType.RoyalFlush) &&
         frontSuitSet.size === 1
     ) {
         return {
             isNatural: true,
             naturalScore: {
                 type: NaturalType.ThreeFlushes,
-                rank: 0,
-                suit: Math.max(...hand.front) % 4,
+                rank: handScore.back.rank,
+                suit: Math.max(...hand.back) % 4,
             },
         };
     }
 
+    const sortedRankAtFront = hand.front
+        .map((c) => Math.floor(c / 4))
+        .sort((a, b) => a - b);
     if (
         Object.keys(naturalConfig).includes(
             NaturalDisplay[NaturalType.ThreeStraights],
         ) &&
         handScore.back.type === HandType.Straight &&
         handScore.middle.type === HandType.Straight &&
-        isContinuous(hand.front) &&
-        isLowStraight(sortedRank)
+        (isContinuous(sortedRankAtFront) || isLowStraight(sortedRankAtFront))
     ) {
         return {
             isNatural: true,
             naturalScore: {
                 type: NaturalType.ThreeStraights,
-                rank: 0,
-                suit: Math.max(...hand.front) % 4,
+                rank: handScore.back.rank,
+                suit: Math.max(...hand.back) % 4,
             },
         };
     }

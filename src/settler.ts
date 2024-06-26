@@ -15,16 +15,29 @@ import {
     initRoyaltyScore,
     initSettlement,
 } from "./helper/initializer";
+import { extend, pushItem } from "./helper/map-helpers";
 
+/**
+ * Calculates the settlement for each player based on the given players, alert for natural, score configuration, and scorer.
+ *
+ * @param {Hand<number[]>[]} players - The array of player's hands.
+ * @param {boolean[]} isAlertNatural - The array indicating if player alerts for natural.
+ * @param {ScoreConfig} scoreConfig - The configuration for scoring.
+ * @param {IScorer<number[], SegmentScore, NaturalCheckResult>} scorer - The scorer for calculating scores.
+ * @return {Settlement[]} The array of settlements for each player.
+ */
 export const settle = (
     players: Hand<number[]>[],
-    isNatural: boolean[],
+    isAlertNatural: boolean[],
     scoreConfig: ScoreConfig,
     scorer: IScorer<number[], SegmentScore, NaturalCheckResult>,
 ): Settlement[] => {
     let result: Map<number, Settlement> = new Map();
-    const { compareHandPlayers, naturalPlayers, crackPlayers } =
-        classifyPlayers(players, isNatural, scorer, scoreConfig);
+    const {
+        compareHandPlayers,
+        naturalPlayers,
+        crackPlayers,
+    } = classifyPlayers(players, isAlertNatural, scorer, scoreConfig);
 
     result = calculateNaturalAndCrack(
         players,
@@ -107,7 +120,7 @@ export const compareHands = (
                 i,
                 j,
             );
-            pusoyPlayers = pusoyPlayers.extend(pusoyMapTemp);
+            pusoyPlayers = extend(pusoyPlayers, pusoyMapTemp);
 
             const { royaltyScore1, royaltyScore2 } = calculateRoyalty(
                 front,
@@ -400,8 +413,8 @@ const calculatePusoy = (
     player1Position: number,
     player2Position: number,
 ) => {
-    const pusoyScore1 = {};
-    const pusoyScore2 = {};
+    const pusoyScore1: Record<string, number> = {};
+    const pusoyScore2: Record<string, number> = {};
     let pusoyMap: Map<number, number[]> = new Map();
     const sum = frontScore + middleScore + backScore;
     if (Math.abs(sum) === 3) {
@@ -409,12 +422,14 @@ const calculatePusoy = (
             Math.floor(sum / Math.abs(sum)) * scoreConfig.pusoy.partial;
 
         if (sum > 0) {
-            pusoyMap = pusoyMap.pushItem(
+            pusoyMap = pushItem(
+                pusoyMap,
                 compareHandPlayerIds[player1Position],
                 compareHandPlayerIds[player2Position],
             );
         } else {
-            pusoyMap = pusoyMap.pushItem(
+            pusoyMap = pushItem(
+                pusoyMap,
                 compareHandPlayerIds[player2Position],
                 compareHandPlayerIds[player1Position],
             );

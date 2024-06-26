@@ -1,17 +1,19 @@
 {
     "compilerOptions": {
         "target": "es2016",
-        "lib": ["es6"],
+        "lib": ["es6", "ES2016", "ES2017.Object"],
         "module": "commonjs",
         "rootDir": "src",
         "resolveJsonModule": true,
         "allowJs": true,
-        "outDir": "build",
+        "outDir": "./dist",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "noImplicitAny": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "declaration": true
     },
-    "files": ["\\--esModuleInterop", "\\--module", "commonjs"]
+    "include": ["src/**/*"],
+    "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

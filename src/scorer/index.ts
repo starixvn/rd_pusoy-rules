@@ -4,10 +4,8 @@ import { isCrack } from "./crack-checker";
 import { checkNatural } from "./natural-checker";
 import { calculateSegmentScore } from "./scorer";
 
-const Scorer: IScorer<number[], SegmentScore, NaturalCheckResult> = {
+export const Scorer: IScorer<number[], SegmentScore, NaturalCheckResult> = {
     calculateSegmentScore,
     isCrack,
     checkNatural,
 };
-
-export default Scorer;

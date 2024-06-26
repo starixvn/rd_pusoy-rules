@@ -6,7 +6,6 @@ import {
     calculateNaturalAndCrack,
     classifyPlayers,
     compareHands,
-    settle,
 } from "./settler";
 import {
     Hand,
@@ -131,7 +130,7 @@ describe("settler", () => {
             });
         });
         describe("player has natural", () => {
-            it("player has natural should have natural score and others should subtract natural score", () => {
+            it("naturalPlayers should have size 1", () => {
                 const p0 = {
                     front: [0],
                     middle: [0],

@@ -23,6 +23,7 @@ export const HandTypeDisplay = {
     [HandType.FourOfAKind]: "FourOfAKind",
     [HandType.StraightFlush]: "StraightFlush",
     [HandType.RoyalFlush]: "RoyalFlush",
+    [HandType.Unknown]: "Unknown",
 };
 
 export enum NaturalType {
@@ -38,6 +39,7 @@ export const NaturalDisplay = {
     [NaturalType.ThreeFlushes]: "ThreeFlushes",
     [NaturalType.Dragon]: "Dragon",
     [NaturalType.SixPairs]: "SixPairs",
+    [NaturalType.Unknown]: "Unknown",
 };
 
 export enum HandPosition {
