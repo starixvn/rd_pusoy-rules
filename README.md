@@ -1,5 +1,7 @@
 # pusoy-rules
 
+[![Quality Gate Status](https://sonarqube.lumigame.com/api/project_badges/measure?project=pusoy-rules&metric=alert_status&token=sqb_13a8ea8806009aa830201deeb2557449a6d80e08)](https://sonarqube.lumigame.com/dashboard?id=pusoy-rules)
+
 pusoy-rules is a TypeScript library for supporting settle Pusoy Game.
 
 ## Installation
