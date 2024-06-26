@@ -1,4 +1,5 @@
 variables:
+    NODEJS_IMAGE: $DOCKER_REG_LOCAL_URL/docker-hub/library/node:lts-slim
     ENABLE_TEST_JS: "true"
 include:
     - project: ci/core-cicd
