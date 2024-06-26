@@ -14,7 +14,7 @@ export const checkNatural = (
     const cards = hand.front.concat(hand.middle).concat(hand.back);
     const { rankMap } = statisticCard(cards);
     const sameRankCounter = countSameRank(rankMap);
-    const sortedRank = Array.from(rankMap.keys()).sort();
+    const sortedRank = rankMap.getSortedKey(true);
 
     if (
         Object.keys(naturalConfig).includes(

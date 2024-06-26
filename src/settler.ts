@@ -53,7 +53,7 @@ export const settle = (
     result = summaryScore(result, players);
 
     const settlements: Settlement[] = Array.from(result.keys())
-        .sort()
+        .sort((a, b) => a - b)
         .map((key) => {
             return {
                 ...initSettlement,
@@ -275,8 +275,8 @@ export const calculateFullPusoy = (
                 const fullPusoyScore =
                     -scoreConfig.pusoy.full +
                     Object.entries(oldResult!.pusoy.partial)
-                        .filter(([k, _]) => k !== key.toString())
-                        .map(([_, v]) => v)
+                        .filter(([k]) => k !== key.toString())
+                        .map(([, v]) => v)
                         .reduce((a, b) => a + b, 0);
                 result.set(other, {
                     ...initSettlement,

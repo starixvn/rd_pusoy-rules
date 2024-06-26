@@ -14,13 +14,12 @@ import { SegmentScore } from "../types";
 export const calculateSegmentScore = (cards: number[]): SegmentScore => {
     const { rankMap, suitSet } = statisticCard(cards);
     if (cards.length === rankMap.size) {
-        const rankSorted = Array.from(rankMap.keys()).sort();
+        const rankSorted = rankMap.getSortedKey(true);
         const lowStraightCards = isLowStraight(rankSorted);
 
         if (
             cards.length === 5 &&
-            isContinuous(rankSorted) &&
-            lowStraightCards
+            (isContinuous(rankSorted) || lowStraightCards)
         ) {
             const maxRank = lowStraightCards
                 ? rankSorted[rankSorted.length - 2]
@@ -60,9 +59,9 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
         const fullHouse = isFullHouse(sameRankCounter);
 
         if (onePair || twoPairs) {
-            let single = sameRankCounter.get(1) || [];
-            single = single.sort();
-            const pairs = sameRankCounter.get(2) || [];
+            let single = sameRankCounter.get(1)!;
+            single = single.sort((a, b) => a - b);
+            const pairs = sameRankCounter.get(2)!;
             const maxRank = Math.max(...pairs);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
             const handScore = highCardBaseScore([...pairs, ...single], 5, 13);
@@ -74,7 +73,7 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             };
         }
         if (threeOfAKind || fullHouse) {
-            const trio = sameRankCounter.get(3) || [];
+            const trio = sameRankCounter.get(3)!;
             const maxRank = Math.max(...trio);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
 
@@ -85,7 +84,7 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             };
         }
         if (isFourOfAKind(sameRankCounter)) {
-            const quad = sameRankCounter.get(4) || [];
+            const quad = sameRankCounter.get(4)!;
             const maxRank = Math.max(...quad);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
             return {
@@ -115,7 +114,7 @@ const getMaxSuitByMaxRank = (
     rankMap: Map<number, number[]>,
     maxRank: number,
 ) => {
-    const suitsByMaxRank = rankMap.get(maxRank) || [0];
+    const suitsByMaxRank = rankMap.get(maxRank)!;
     const maxSuit = Math.max(...suitsByMaxRank);
     return maxSuit;
 };

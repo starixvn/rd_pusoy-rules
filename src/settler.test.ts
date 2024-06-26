@@ -447,7 +447,7 @@ describe("settler", () => {
             });
         });
         describe("player 0 full pusoy, player 1 partial pusoy player 2", () => {
-            it("should return player 1 increase full pusoy score and player 2 decrease full pusoy score", () => {
+            it("should return player 0 full pusoy score and player 1 increase full pusoy score and player 2 decrease full pusoy score", () => {
                 const pusoyPlayers: Map<number, number[]> = new Map();
                 pusoyPlayers.set(0, [1, 2]);
                 const tempResult: Map<number, Settlement> = new Map();
