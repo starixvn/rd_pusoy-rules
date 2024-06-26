@@ -3,5 +3,5 @@
         "package.json": "package-lock.json",
         "*.ts": "$(capture).test.ts"
     },
-    "cSpell.words": ["pusoy"]
+    "cSpell.words": ["cicd", "luminet", "pusoy"]
 }

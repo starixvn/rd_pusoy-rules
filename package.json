@@ -10,8 +10,10 @@
     "type": "module",
     "scripts": {
         "dev": "tsx src/index.ts",
-        "test": "jest --coverage",
-        "generate-docs": "ts-readme"
+        "test-coverage": "jest --coverage",
+        "generate-docs": "ts-readme",
+        "build": "tsc",
+        "lint": "eslint ."
     },
     "keywords": [],
     "author": "",
