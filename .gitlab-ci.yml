@@ -1,6 +1,8 @@
 variables:
     NODEJS_IMAGE: $DOCKER_REG_LOCAL_URL/docker-hub/library/node:lts-slim
+    PUBLISH_NPM_IMAGE: $DOCKER_REG_LOCAL_URL/docker-hub/library/node:lts-slim
     ENABLE_TEST_JS: "true"
+    PUBLISH_NPM: "true"
 include:
     - project: ci/core-cicd
       ref: main
