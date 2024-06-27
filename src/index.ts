@@ -1,4 +1,3 @@
-export { settle } from "./settler";
-export { Scorer } from "./scorer";
+export { Settler } from "./settler";
 export * from "./const";
 export * from "./types";

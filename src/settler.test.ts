@@ -1,6 +1,7 @@
 import { HandType, NaturalType } from "./const";
 import { initSettlement } from "./helper/initializer";
 import "./helper/map-helpers";
+import { checkNatural } from "./scorer";
 import {
     calculateFullPusoy,
     calculateNaturalAndCrack,
@@ -15,12 +16,15 @@ import {
     Settlement,
 } from "./types";
 
+const checkNaturalMock = checkNatural as jest.Mock;
+jest.mock("./scorer");
+
 const scoreConfig: ScoreConfig = {
     normal: 1,
     natural: {
-        ThreeFlushes: 3,
-        SixPairs: 6,
-        Dragon: 12,
+        threeFlushes: 3,
+        sixPairs: 6,
+        dragon: 12,
     },
     crack: 6,
     pusoy: {
@@ -29,18 +33,18 @@ const scoreConfig: ScoreConfig = {
     },
     royalty: {
         front: {
-            ThreeOfAKind: 3,
+            threeOfAKind: 3,
         },
         middle: {
-            FullHouse: 2,
-            FourOfAKind: 8,
-            StraightFlush: 10,
-            RoyalFlush: 20,
+            fullHouse: 2,
+            fourOfAKind: 8,
+            straightFlush: 10,
+            royalFlush: 20,
         },
         back: {
-            FourOfAKind: 4,
-            StraightFlush: 5,
-            RoyalFlush: 10,
+            fourOfAKind: 4,
+            straightFlush: 5,
+            royalFlush: 10,
         },
     },
 };
@@ -64,24 +68,14 @@ describe("settler", () => {
                     middle: [2],
                     back: [2],
                 };
-                const scorer = {
-                    checkNatural: jest.fn(),
-                    calculateSegmentScore: () => ({
-                        type: 0,
-                        rank: 0,
-                        suit: 0,
-                    }),
-                    isCrack: () => false,
-                };
 
                 classifyPlayers(
                     [p0, p1, p2],
                     [false, false, false],
-                    scorer,
                     scoreConfig,
                 );
 
-                expect(scorer.checkNatural).toHaveBeenCalledTimes(0);
+                expect(checkNaturalMock).toHaveBeenCalledTimes(0);
             });
         });
         describe("players alert natural", () => {
@@ -101,16 +95,8 @@ describe("settler", () => {
                     middle: [2],
                     back: [2],
                 };
-                const scorer = {
-                    checkNatural: jest.fn(),
-                    calculateSegmentScore: () => ({
-                        type: 0,
-                        rank: 0,
-                        suit: 0,
-                    }),
-                    isCrack: () => false,
-                };
-                scorer.checkNatural.mockReturnValue({
+
+                checkNaturalMock.mockReturnValue({
                     isNatural: false,
                     naturalScore: {
                         type: 0,
@@ -119,14 +105,9 @@ describe("settler", () => {
                     },
                 });
 
-                classifyPlayers(
-                    [p0, p1, p2],
-                    [true, true, false],
-                    scorer,
-                    scoreConfig,
-                );
+                classifyPlayers([p0, p1, p2], [true, true, false], scoreConfig);
 
-                expect(scorer.checkNatural).toHaveBeenCalledTimes(2);
+                expect(checkNaturalMock).toHaveBeenCalledTimes(2);
             });
         });
         describe("player has natural", () => {
@@ -146,16 +127,8 @@ describe("settler", () => {
                     middle: [2],
                     back: [2],
                 };
-                const scorer = {
-                    checkNatural: jest.fn(),
-                    calculateSegmentScore: () => ({
-                        type: 0,
-                        rank: 0,
-                        suit: 0,
-                    }),
-                    isCrack: () => false,
-                };
-                scorer.checkNatural.mockReturnValue({
+
+                checkNaturalMock.mockReturnValue({
                     isNatural: true,
                     naturalScore: {
                         type: NaturalType.ThreeFlushes,
@@ -167,7 +140,6 @@ describe("settler", () => {
                 const { naturalPlayers } = classifyPlayers(
                     [p0, p1, p2],
                     [true, false, false],
-                    scorer,
                     scoreConfig,
                 );
 
@@ -213,8 +185,8 @@ describe("settler", () => {
                     .map((k) => result.get(k)!.natural);
                 expect(isCracks).toStrictEqual([true, false]);
                 expect(isNaturals).toStrictEqual([
-                    { ThreeFlushes: -3 },
-                    { ThreeFlushes: 3 },
+                    { threeFlushes: -3 },
+                    { threeFlushes: 3 },
                 ]);
             });
         });
@@ -287,8 +259,8 @@ describe("settler", () => {
                     .sort()
                     .map((k) => result.get(k)!.natural);
                 expect(isNaturals).toStrictEqual([
-                    { Dragon: -12 },
-                    { Dragon: 12 },
+                    { dragon: -12 },
+                    { dragon: 12 },
                 ]);
             });
         });
@@ -382,12 +354,12 @@ describe("settler", () => {
                     .map((k) => result.get(k)!.royalty);
                 expect(royalties).toStrictEqual([
                     {
-                        front: { ThreeOfAKind: 3 },
+                        front: { threeOfAKind: 3 },
                         middle: {},
                         back: {},
                     },
                     {
-                        front: { ThreeOfAKind: -3 },
+                        front: { threeOfAKind: -3 },
                         middle: {},
                         back: {},
                     },

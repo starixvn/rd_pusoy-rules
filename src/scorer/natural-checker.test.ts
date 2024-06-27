@@ -7,10 +7,10 @@ import { calculateSegmentScore } from "./scorer";
 const scoreConfig: ScoreConfig = {
     normal: 1,
     natural: {
-        ThreeFlushes: 3,
-        SixPairs: 6,
-        Dragon: 12,
-        ThreeStraights: 3,
+        threeFlushes: 3,
+        sixPairs: 6,
+        dragon: 12,
+        threeStraights: 3,
     },
     crack: 6,
     pusoy: {
@@ -19,18 +19,18 @@ const scoreConfig: ScoreConfig = {
     },
     royalty: {
         front: {
-            ThreeOfAKind: 3,
+            threeOfAKind: 3,
         },
         middle: {
-            FullHouse: 2,
-            FourOfAKind: 8,
-            StraightFlush: 10,
-            RoyalFlush: 20,
+            fullHouse: 2,
+            fourOfAKind: 8,
+            straightFlush: 10,
+            royalFlush: 20,
         },
         back: {
-            FourOfAKind: 4,
-            StraightFlush: 5,
-            RoyalFlush: 10,
+            fourOfAKind: 4,
+            straightFlush: 5,
+            royalFlush: 10,
         },
     },
 };

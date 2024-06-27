@@ -15,14 +15,14 @@ npm install pusoy-rules
 ## Usage
 
 ```typescript
-import { Hand, ScoreConfig, Scorer, settle } from "pusoy-rules";
+import { Hand, ScoreConfig, Settler } from "pusoy-rules";
 
 const scoreConfig: ScoreConfig = {
     normal: 1,
     natural: {
-        ThreeFlushes: 3,
-        SixPairs: 6,
-        Dragon: 12,
+        threeFlushes: 3,
+        sixPairs: 6,
+        dragon: 12,
     },
     crack: 6,
     pusoy: {
@@ -31,18 +31,18 @@ const scoreConfig: ScoreConfig = {
     },
     royalty: {
         front: {
-            ThreeOfAKind: 3,
+            threeOfAKind: 3,
         },
         middle: {
-            FullHouse: 2,
-            FourOfAKind: 8,
-            StraightFlush: 10,
-            RoyalFlush: 20,
+            fullHouse: 2,
+            fourOfAKind: 8,
+            straightFlush: 10,
+            royalFlush: 20,
         },
         back: {
-            FourOfAKind: 4,
-            StraightFlush: 5,
-            RoyalFlush: 10,
+            fourOfAKind: 4,
+            straightFlush: 5,
+            royalFlush: 10,
         },
     },
 };
@@ -63,29 +63,20 @@ const player3: Hand<number[]> = {
     back: [45, 41, 36, 49, 33],
 };
 
-const result = settle(
-    [player1, player2, player3],
-    [true, false, true],
-    scoreConfig,
-    Scorer,
-);
+Settler.configure(scoreConfig);
+
+const result = Settler.settle([player1, player2, player3], [true, false, true]);
 ```
 
 ## API documentation
 
-<!-- INSERT GENERATED DOCS START -->
+`settle(players, isAlertNatural) ⇒ Settlement[]`
 
-### `settle` (function)
+Calculates the settlement for each player based on the given players and whether they alerted for a natural win.
 
-Calculates the settlement for each player based on the given players, alert for natural, score configuration, and scorer.
+-   **Parameters**:
 
-**Parameters:**
+    -   `players`: An array of player's hands (type: `Hand<number[]>[]`).
+    -   `isAlertNatural`: An array indicating if a player alerts for natural (type: `boolean[]`).
 
--   players (`Hand<number[]>[]`) - The array of player's hands.
--   isAlertNatural (`boolean[]`) - The array indicating if player alerts for natural.
--   scoreConfig (`ScoreConfig`) - The configuration for scoring.
--   scorer (`IScorer<number[], SegmentScore, NaturalCheckResult>`) - The scorer for calculating scores.
-
-<!-- INSERT GENERATED DOCS END -->
-
-## Cards Convention
+-   **Return Value**: An array of settlements for each player (type: `Settlement[]`).

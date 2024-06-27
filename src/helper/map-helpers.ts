@@ -1,36 +1,43 @@
-export const pushItem = function <K, V>(
-    originMap: Map<K, V[]>,
+declare global {
+    interface Map<K, V> {
+        pushItem<V>(this: Map<K, V[]>, itemKey: K, item: V): Map<K, V[]>;
+        accumulateFromOtherMap<V>(
+            this: Map<K, V[]>,
+            otherMap: Map<K, V[]>,
+        ): Map<K, V[]>;
+        getSortedIncreaseKeys(this: Map<number, V>): number[];
+    }
+}
+
+Map.prototype.pushItem = function<K, V>(
+    this: Map<K, V[]>,
     itemKey: K,
     item: V,
 ) {
-    const newMap = new Map(originMap);
-    if (!newMap.has(itemKey)) {
-        newMap.set(itemKey, [item]);
+    if (!this.has(itemKey)) {
+        this.set(itemKey, [item]);
     } else {
-        newMap.get(itemKey)?.push(item);
+        this.get(itemKey)?.push(item);
     }
 
-    return newMap;
+    return this;
 };
 
-export const extend = function <K, V>(
-    originMap: Map<K, V>,
-    extendMap: Map<K, V>,
-) {
-    const newMap = new Map(originMap);
-    extendMap.forEach((value, key) => {
-        newMap.set(key, value);
+Map.prototype.accumulateFromOtherMap = function<K, V>(
+    this: Map<K, V[]>,
+    otherMap: Map<K, V[]>,
+): Map<K, V[]> {
+    otherMap.forEach((value, key) => {
+        value.forEach((v) => this.pushItem(key, v));
     });
 
-    return newMap;
+    return this;
 };
 
-export const getSortedKey = function <V>(
-    originMap: Map<number, V>,
-    increase = true,
+Map.prototype.getSortedIncreaseKeys = function<V>(
+    this: Map<number, V>,
 ): number[] {
-    const newMap = new Map(originMap);
-    return Array.from(newMap.keys()).sort(
-        (a, b) => (a - b) * (increase ? 1 : -1),
-    );
+    return Array.from(this.keys()).sort((a, b) => a - b);
 };
+
+export {};

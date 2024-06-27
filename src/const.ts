@@ -13,17 +13,17 @@ export enum HandType {
 }
 
 export const HandTypeDisplay = {
-    [HandType.HighCard]: "HighCard",
-    [HandType.OnePair]: "OnePair",
-    [HandType.TwoPairs]: "TwoPairs",
-    [HandType.ThreeOfAKind]: "ThreeOfAKind",
-    [HandType.Straight]: "Straight",
-    [HandType.Flush]: "Flush",
-    [HandType.FullHouse]: "FullHouse",
-    [HandType.FourOfAKind]: "FourOfAKind",
-    [HandType.StraightFlush]: "StraightFlush",
-    [HandType.RoyalFlush]: "RoyalFlush",
-    [HandType.Unknown]: "Unknown",
+    [HandType.HighCard]: "highCard",
+    [HandType.OnePair]: "onePair",
+    [HandType.TwoPairs]: "twoPairs",
+    [HandType.ThreeOfAKind]: "threeOfAKind",
+    [HandType.Straight]: "straight",
+    [HandType.Flush]: "flush",
+    [HandType.FullHouse]: "fullHouse",
+    [HandType.FourOfAKind]: "fourOfAKind",
+    [HandType.StraightFlush]: "straightFlush",
+    [HandType.RoyalFlush]: "royalFlush",
+    [HandType.Unknown]: "unknown",
 };
 
 export enum NaturalType {
@@ -35,11 +35,11 @@ export enum NaturalType {
 }
 
 export const NaturalDisplay = {
-    [NaturalType.ThreeStraights]: "ThreeStraights",
-    [NaturalType.ThreeFlushes]: "ThreeFlushes",
-    [NaturalType.Dragon]: "Dragon",
-    [NaturalType.SixPairs]: "SixPairs",
-    [NaturalType.Unknown]: "Unknown",
+    [NaturalType.ThreeStraights]: "threeStraights",
+    [NaturalType.ThreeFlushes]: "threeFlushes",
+    [NaturalType.Dragon]: "dragon",
+    [NaturalType.SixPairs]: "sixPairs",
+    [NaturalType.Unknown]: "unknown",
 };
 
 export enum HandPosition {

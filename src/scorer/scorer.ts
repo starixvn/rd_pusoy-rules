@@ -10,12 +10,13 @@ import {
 } from "./hand-type-checker";
 import { countSameRank, statisticCard } from "../helper/card-helpers";
 import { SegmentScore } from "../types";
-import { getSortedKey } from "../helper/map-helpers";
+import "../helper/array-helper";
+import "../helper/map-helpers";
 
 export const calculateSegmentScore = (cards: number[]): SegmentScore => {
     const { rankMap, suitSet } = statisticCard(cards);
     if (cards.length === rankMap.size) {
-        const rankSorted = getSortedKey(rankMap, true);
+        const rankSorted = rankMap.getSortedIncreaseKeys();
         const lowStraightCards = isLowStraight(rankSorted);
 
         if (
@@ -60,12 +61,13 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
         const fullHouse = isFullHouse(sameRankCounter);
 
         if (onePair || twoPairs) {
-            let single = sameRankCounter.get(1)!;
-            single = single.sort((a, b) => a - b);
+            const single = sameRankCounter.get(1)!;
+            single.sortIncrease();
             const pairs = sameRankCounter.get(2)!;
             const maxRank = Math.max(...pairs);
+            pairs.sortIncrease();
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
-            const handScore = highCardBaseScore([...pairs, ...single], 5, 13);
+            const handScore = highCardBaseScore([...single, ...pairs], 5, 13);
 
             return {
                 type: twoPairs ? HandType.TwoPairs : HandType.OnePair,

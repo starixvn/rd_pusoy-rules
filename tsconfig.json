@@ -12,7 +12,8 @@
         "strict": true,
         "noImplicitAny": true,
         "skipLibCheck": true,
-        "declaration": true
+        "declaration": true,
+        "declarationMap": true
     },
     "include": ["src/**/*"],
     "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
