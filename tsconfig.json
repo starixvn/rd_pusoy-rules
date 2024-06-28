@@ -4,16 +4,11 @@
         "lib": ["es6", "ES2016", "ES2017.Object"],
         "module": "commonjs",
         "rootDir": "src",
-        "resolveJsonModule": true,
-        "allowJs": true,
         "outDir": "./dist",
         "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
         "strict": true,
         "noImplicitAny": true,
-        "skipLibCheck": true,
-        "declaration": true,
-        "declarationMap": true
+        "declaration": true
     },
     "include": ["src/**/*"],
     "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]

@@ -44,11 +44,8 @@ const settle = (
     scoreConfig: ScoreConfig,
 ): Settlement[] => {
     let result: Map<number, Settlement> = new Map();
-    const {
-        compareHandPlayers,
-        naturalPlayers,
-        crackPlayers,
-    } = classifyPlayers(players, isAlertNatural, scoreConfig);
+    const { compareHandPlayers, naturalPlayers, crackPlayers } =
+        classifyPlayers(players, isAlertNatural, scoreConfig);
 
     result = calculateNaturalAndCrack(
         players,
