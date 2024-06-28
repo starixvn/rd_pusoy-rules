@@ -380,18 +380,18 @@ const updateResultByCompareSegment = (
             full: 0,
         },
         royalty: {
-            front: {
-                ...oldValue?.royalty?.front,
-                ...royaltyScore.front,
-            },
-            middle: {
-                ...oldValue?.royalty?.middle,
-                ...royaltyScore.middle,
-            },
-            back: {
-                ...oldValue?.royalty?.back,
-                ...royaltyScore.back,
-            },
+            front: sumValueByKey(
+                oldValue?.royalty?.front || {},
+                royaltyScore.front,
+            ),
+            middle: sumValueByKey(
+                oldValue?.royalty?.middle || {},
+                royaltyScore.middle,
+            ),
+            back: sumValueByKey(
+                oldValue?.royalty?.back || {},
+                royaltyScore.back,
+            ),
         },
         normal: addNormalScore(
             {
