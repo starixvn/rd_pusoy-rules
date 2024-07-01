@@ -1,3 +1,3 @@
 export * from "./const";
-export { Settler } from "./settler";
+export { createPusoyRules } from "./settler";
 export * from "./types";

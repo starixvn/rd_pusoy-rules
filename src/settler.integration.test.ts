@@ -1,5 +1,5 @@
-import { Settler } from "./settler";
-import { Hand, ScoreConfig } from "./types";
+import { ScoreConfig } from "./types";
+import { createPusoyRules } from "./settler";
 
 const scoreConfig: ScoreConfig = {
     normal: 1,
@@ -7,6 +7,7 @@ const scoreConfig: ScoreConfig = {
         threeFlushes: 3,
         sixPairs: 6,
         dragon: 12,
+        threeStraights: 3,
     },
     crack: 6,
     pusoy: {
@@ -30,7 +31,7 @@ const scoreConfig: ScoreConfig = {
         },
     },
 };
-Settler.configure(scoreConfig);
+const pusoy = createPusoyRules(scoreConfig);
 
 describe("settle", () => {
     describe("4 players alert natural", () => {
@@ -107,13 +108,39 @@ describe("settle", () => {
                 [-18, 0, 16, 2],
                 "Case 2024.06.28.16.20",
             ],
+            [
+                {
+                    front: [45, 27, 50],
+                    middle: [37, 0, 17, 5, 15],
+                    back: [40, 22, 8, 26, 42],
+                },
+                {
+                    front: [9, 20, 38],
+                    middle: [43, 19, 51, 31, 7],
+                    back: [13, 14, 12, 3, 2],
+                },
+                {
+                    front: [35, 46, 48],
+                    middle: [4, 1, 11, 6, 10],
+                    back: [25, 16, 34, 23, 29],
+                },
+                {
+                    front: [47, 39, 49],
+                    middle: [24, 28, 32, 18, 21],
+                    back: [44, 36, 41, 30, 33],
+                },
+                [-18, 8, -1, 11],
+                "Case 2024.07.01.16.47",
+            ],
         ])(
             "sum score p0 %j, p1 %j, p2 %j, p3 %j should be %j (%s)",
             (p0, p1, p2, p3, expected, caseName) => {
-                const result = Settler.settle(
-                    [p0, p1, p2, p3],
-                    [true, true, true, true],
-                );
+                const playerData = [p0, p1, p2, p3].map((p) => ({
+                    hand: p,
+                    isAlertNatural: true,
+                }));
+
+                const result = pusoy.settle(playerData);
                 console.log(`${caseName} \n`, result);
 
                 const sum = result.map((s) => s.sum);

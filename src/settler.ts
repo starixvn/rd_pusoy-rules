@@ -1,7 +1,13 @@
-import { HandType, HandTypeDisplay, NaturalDisplay } from "./const";
+import {
+    HandType,
+    HandTypeDisplay,
+    NaturalDisplay,
+    NaturalType,
+} from "./const";
 import {
     Hand,
     NaturalScore,
+    PlayerData,
     ScoreConfig,
     SegmentScore,
     Settlement,
@@ -13,74 +19,53 @@ import {
     initRoyaltyScore,
     initSettlement,
 } from "./helper/initializer";
-import "./helper/map-helpers";
-import { calculateSegmentScore, checkNatural, isCrack } from "./scorer";
+import { calculateSegmentScore, isCrack } from "./scorer";
+import { sortIncrease } from "./helper/array-helpers";
+import { accumulateFromOtherMap, pushItem } from "./helper/map-helpers";
+import { calculateNaturalScore } from "./scorer/natural-calculator/calculate-natural-score";
 
-export class Settler {
-    private static scoreConfig: ScoreConfig;
+export const createPusoyRules = (scoreConfig: ScoreConfig) => {
+    return {
+        settle: (playerData: PlayerData[]) => {
+            return settle(playerData, scoreConfig);
+        },
+    };
+};
 
-    public static configure(scoreConfig: ScoreConfig) {
-        this.scoreConfig = scoreConfig;
-    }
-
-    /**
-     * Calculates the settlement for each player based on the given players, alert for natural.
-     *
-     * @param {Hand<number[]>[]} players - The array of player's hands.
-     * @param {boolean[]} isAlertNatural - The array indicating if player alerts for natural.
-     * @return {Settlement[]} The array of settlements for each player.
-     */
-    public static settle(
-        players: Hand<number[]>[],
-        isAlertNatural: boolean[],
-    ): Settlement[] {
-        return settle(players, isAlertNatural, this.scoreConfig);
-    }
-}
-
+/**
+ * Calculates the settlement for each player based on the given players, alert for natural.
+ *
+ * @param {Hand<number[]>[]} players - The array of player's hands.
+ * @param {boolean[]} isAlertNatural - The array indicating if player alerts for natural.
+ * @return {Settlement[]} The array of settlements for each player.
+ */
 const settle = (
-    players: Hand<number[]>[],
-    isAlertNatural: boolean[],
+    playerData: PlayerData[],
     scoreConfig: ScoreConfig,
 ): Settlement[] => {
     let result: Map<number, Settlement> = new Map();
-    const { compareHandPlayers, naturalPlayers, crackPlayers } =
-        classifyPlayers(players, isAlertNatural, scoreConfig);
+    const classifyPlayersResult = classifyPlayers(playerData, scoreConfig);
 
-    result = calculateNaturalAndCrack(
-        players,
-        result,
+    const preProcessDataPlayer = {
+        ...classifyPlayersResult,
+        numberOfPlayer: playerData.length,
         scoreConfig,
-        naturalPlayers,
-        crackPlayers,
-    );
+    };
 
-    if (compareHandPlayers.size >= 2) {
-        const { pusoyPlayers, result: compareHandsResult } = compareHands(
-            compareHandPlayers,
-            scoreConfig,
-            result,
-        );
-        result = compareHandsResult;
+    result = calculateNaturalAndCrack(result, preProcessDataPlayer);
 
-        result = calculateFullPusoy(
-            pusoyPlayers,
-            players.length,
-            result,
-            scoreConfig,
-        );
-    }
+    result = compareHands(result, preProcessDataPlayer);
 
     result = summaryScore(result);
 
-    const settlements: Settlement[] = Array.from(result.keys())
-        .sortIncrease()
-        .map((key) => {
-            return {
-                ...initSettlement,
-                ...result.get(key),
-            };
-        });
+    const settlements: Settlement[] = sortIncrease(
+        Array.from(result.keys()),
+    ).map((key) => {
+        return {
+            ...initSettlement,
+            ...result.get(key),
+        };
+    });
 
     return settlements;
 };
@@ -95,12 +80,23 @@ const subtractValue = (object: Record<string, number>) => {
 };
 
 export const compareHands = (
-    compareHandPlayers: Map<number, Hand<SegmentScore>>,
-    scoreConfig: ScoreConfig,
-    tempResult: Map<number, Settlement>,
+    currentResult: Map<number, Settlement>,
+    {
+        compareHandPlayers,
+        scoreConfig,
+        numberOfPlayer,
+    }: {
+        compareHandPlayers: Map<number, Hand<SegmentScore>>;
+        scoreConfig: ScoreConfig;
+        numberOfPlayer: number;
+    },
 ) => {
-    const pusoyPlayers: Map<number, number[]> = new Map();
-    let result: Map<number, Settlement> = new Map(tempResult);
+    if (compareHandPlayers.size < 2) {
+        return currentResult;
+    }
+
+    let pusoyPlayers: Map<number, number[]> = new Map();
+    let result: Map<number, Settlement> = new Map(currentResult);
     const compareHandPlayerIds = Array.from(compareHandPlayers.keys());
     for (let i = 0; i < compareHandPlayerIds.length - 1; i++) {
         for (let j = i + 1; j < compareHandPlayerIds.length; j++) {
@@ -128,7 +124,7 @@ export const compareHands = (
                 i,
                 j,
             );
-            pusoyPlayers.accumulateFromOtherMap(pusoyMapTemp);
+            pusoyPlayers = accumulateFromOtherMap(pusoyPlayers, pusoyMapTemp);
 
             const { royaltyScore1, royaltyScore2 } = calculateRoyalty(
                 front,
@@ -179,22 +175,33 @@ export const compareHands = (
             );
         }
     }
-    return {
-        pusoyPlayers,
+    result = calculateFullPusoy(
         result,
-    };
+        pusoyPlayers,
+        numberOfPlayer,
+        scoreConfig,
+    );
+
+    return result;
 };
 
 export const calculateNaturalAndCrack = (
-    players: Hand<number[]>[],
     tempResult: Map<number, Settlement>,
-    scoreConfig: ScoreConfig,
-    naturalPlayers: Map<number, NaturalScore>,
-    crackPlayers: Set<number>,
+    {
+        naturalPlayers,
+        crackPlayers,
+        numberOfPlayer,
+        scoreConfig,
+    }: {
+        naturalPlayers: Map<number, NaturalScore>;
+        crackPlayers: Set<number>;
+        numberOfPlayer: number;
+        scoreConfig: ScoreConfig;
+    },
 ) => {
     let result = new Map(tempResult);
-    for (let i = 0; i < players.length - 1; i++) {
-        for (let j = i + 1; j < players.length; j++) {
+    for (let i = 0; i < numberOfPlayer - 1; i++) {
+        for (let j = i + 1; j < numberOfPlayer; j++) {
             const oldResult1: Settlement | undefined =
                 result.get(i) || undefined;
             const oldResult2: Settlement | undefined =
@@ -233,18 +240,17 @@ export const calculateNaturalAndCrack = (
 };
 
 export const classifyPlayers = (
-    players: Hand<number[]>[],
-    isNatural: boolean[],
+    playerData: PlayerData[],
     scoreConfig: ScoreConfig,
 ) => {
     const crackPlayers: Set<number> = new Set();
     const naturalPlayers: Map<number, NaturalScore> = new Map();
     const compareHandPlayers: Map<number, Hand<SegmentScore>> = new Map();
-    for (let i = 0; i < players.length; i++) {
+    for (let i = 0; i < playerData.length; i++) {
         const handScore: Hand<SegmentScore> = {
-            front: calculateSegmentScore(players[i].front),
-            middle: calculateSegmentScore(players[i].middle),
-            back: calculateSegmentScore(players[i].back),
+            front: calculateSegmentScore(playerData[i].hand.front),
+            middle: calculateSegmentScore(playerData[i].hand.middle),
+            back: calculateSegmentScore(playerData[i].hand.back),
         };
 
         if (isCrack(handScore)) {
@@ -253,13 +259,13 @@ export const classifyPlayers = (
             continue;
         }
 
-        if (isNatural[i]) {
-            const { isNatural, naturalScore } = checkNatural(
-                players[i],
+        if (playerData[i].isAlertNatural) {
+            const naturalScore = calculateNaturalScore(
+                playerData[i].hand,
                 handScore,
                 scoreConfig.natural,
             );
-            if (isNatural) {
+            if (naturalScore.type !== NaturalType.Unknown) {
                 naturalPlayers.set(i, naturalScore);
 
                 continue;
@@ -272,12 +278,12 @@ export const classifyPlayers = (
 };
 
 export const calculateFullPusoy = (
+    currentResult: Map<number, Settlement>,
     pusoyPlayers: Map<number, number[]>,
     numberOfPlayers: number,
-    tempResult: Map<number, Settlement>,
     scoreConfig: ScoreConfig,
 ) => {
-    const result = new Map(tempResult);
+    const result = new Map(currentResult);
     for (const [key, value] of pusoyPlayers) {
         if (value.length > 1 && value.length === numberOfPlayers - 1) {
             const oldResult = result.get(key);
@@ -419,19 +425,21 @@ const calculatePusoy = (
 ) => {
     const pusoyScore1: Record<string, number> = {};
     const pusoyScore2: Record<string, number> = {};
-    const pusoyMap: Map<number, number[]> = new Map();
+    let pusoyMap: Map<number, number[]> = new Map();
     const sum = frontScore + middleScore + backScore;
     if (Math.abs(sum) === 3) {
         const score =
             Math.floor(sum / Math.abs(sum)) * scoreConfig.pusoy.partial;
 
         if (sum > 0) {
-            pusoyMap.pushItem(
+            pusoyMap = pushItem(
+                pusoyMap,
                 compareHandPlayerIds[player1Position],
                 compareHandPlayerIds[player2Position],
             );
         } else {
-            pusoyMap.pushItem(
+            pusoyMap = pushItem(
+                pusoyMap,
                 compareHandPlayerIds[player2Position],
                 compareHandPlayerIds[player1Position],
             );

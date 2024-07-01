@@ -2,8 +2,8 @@ import { HandType, NaturalDisplay, NaturalType } from "../const";
 import { isContinuous, isLowStraight } from "./hand-type-checker";
 import { countSameRank, statisticCard } from "../helper/card-helpers";
 import { Hand, NaturalScore, SegmentScore } from "../types";
-import "../helper/array-helper";
-import "../helper/map-helpers";
+import { sortIncrease } from "../helper/array-helpers";
+import { getSortedIncreaseKeys } from "../helper/map-helpers";
 
 export const checkNatural = (
     hand: Hand<number[]>,
@@ -16,7 +16,7 @@ export const checkNatural = (
     const cards = hand.front.concat(hand.middle).concat(hand.back);
     const { rankMap } = statisticCard(cards);
     const sameRankCounter = countSameRank(rankMap);
-    const sortedRank = rankMap.getSortedIncreaseKeys();
+    const sortedRank = getSortedIncreaseKeys(rankMap);
 
     const orderOfNaturalCheck = Array.from(Object.keys(naturalConfig)).sort(
         (a, b) => naturalConfig[b] - naturalConfig[a],
@@ -91,9 +91,9 @@ export const checkNatural = (
         },
 
         [NaturalDisplay[NaturalType.ThreeStraights]]: () => {
-            const sortedRankAtFront = hand.front
-                .map((c) => Math.floor(c / 4))
-                .sortIncrease();
+            const sortedRankAtFront = sortIncrease(
+                hand.front.map((c) => Math.floor(c / 4)),
+            );
             if (
                 handScore.back.type === HandType.Straight &&
                 handScore.middle.type === HandType.Straight &&

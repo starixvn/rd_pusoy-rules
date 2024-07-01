@@ -21,6 +21,11 @@ export type Hand<DataType> = {
     back: DataType;
 };
 
+export type PlayerData = {
+    hand: Hand<number[]>;
+    isAlertNatural: boolean;
+};
+
 export type Settlement = {
     crack: {
         isCrack: boolean;

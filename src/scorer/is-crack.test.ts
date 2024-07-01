@@ -1,5 +1,5 @@
 import { HandType } from "../const";
-import { isCrack } from "./crack-checker";
+import { isCrack } from "./is-crack";
 
 describe("Crack Checker", () => {
     test.each([
