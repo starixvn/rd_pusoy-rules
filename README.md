@@ -20,6 +20,7 @@ import { Hand, ScoreConfig, Settler } from "pusoy-rules";
 const scoreConfig: ScoreConfig = {
     normal: 1,
     natural: {
+        threeStraights: 3,
         threeFlushes: 3,
         sixPairs: 6,
         dragon: 12,
@@ -48,24 +49,33 @@ const scoreConfig: ScoreConfig = {
 };
 
 const player1: Hand<number[]> = {
-    front: [0, 2, 25],
-    middle: [44, 43, 24, 31, 29],
-    back: [51, 50, 15, 13, 47],
+    hand: {
+        front: [0, 2, 25],
+        middle: [44, 43, 24, 31, 29],
+        back: [51, 50, 15, 13, 47],
+    },
+    isAlertNatural: true,
 };
 const player2: Hand<number[]> = {
-    front: [16, 18, 19],
-    middle: [21, 10, 8, 9, 11],
-    back: [17, 6, 7, 4, 5],
+    hand: {
+        front: [16, 18, 19],
+        middle: [21, 10, 8, 9, 11],
+        back: [17, 6, 7, 4, 5],
+    },
+    isAlertNatural: false,
 };
 const player3: Hand<number[]> = {
-    front: [40, 1, 48],
-    middle: [3, 35, 14, 34, 30],
-    back: [45, 41, 36, 49, 33],
+    hand: {
+        front: [40, 1, 48],
+        middle: [3, 35, 14, 34, 30],
+        back: [45, 41, 36, 49, 33],
+    },
+    isAlertNatural: true,
 };
 
-Settler.configure(scoreConfig);
+const pusoy = createPusoyRules(scoreConfig);
 
-const result = Settler.settle([player1, player2, player3], [true, false, true]);
+const result = pusoy.settle([player1, player2, player3]);
 ```
 
 ## API documentation
