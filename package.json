@@ -1,6 +1,6 @@
 {
     "name": "@rd/pusoy-rules",
-    "version": "1.0.1-beta.3",
+    "version": "1.0.1-beta.4",
     "description": "A TypeScript library for supporting settle Pusoy Game",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
