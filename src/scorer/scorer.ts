@@ -10,7 +10,6 @@ import {
 } from "./hand-type-checker";
 import { countSameRank, statisticCard } from "../helper/card-helpers";
 import { SegmentScore } from "../types";
-import "../helper/map-helpers";
 import { sortIncrease } from "../helper/array-helpers";
 import { getSortedIncreaseKeys } from "../helper/map-helpers";
 
