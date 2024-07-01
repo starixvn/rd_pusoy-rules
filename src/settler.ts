@@ -26,19 +26,18 @@ import { calculateNaturalScore } from "./scorer/natural-calculator/calculate-nat
 
 export const createPusoyRules = (scoreConfig: ScoreConfig) => {
     return {
+        /**
+         * Calculates the settlement for each player based on the given score configuration.
+         *
+         * @param {PlayerData[]} playerData - an array of player data to settle
+         * @return {Settlement[]} An array of settlements for each player
+         */
         settle: (playerData: PlayerData[]) => {
             return settle(playerData, scoreConfig);
         },
     };
 };
 
-/**
- * Calculates the settlement for each player based on the given players, alert for natural.
- *
- * @param {Hand<number[]>[]} players - The array of player's hands.
- * @param {boolean[]} isAlertNatural - The array indicating if player alerts for natural.
- * @return {Settlement[]} The array of settlements for each player.
- */
 const settle = (
     playerData: PlayerData[],
     scoreConfig: ScoreConfig,

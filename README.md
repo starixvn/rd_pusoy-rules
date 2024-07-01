@@ -80,13 +80,12 @@ const result = pusoy.settle([player1, player2, player3]);
 
 ## API documentation
 
-`settle(players, isAlertNatural) ⇒ Settlement[]`
+`settle(playerData) ⇒ Settlement[]`
 
-Calculates the settlement for each player based on the given players and whether they alerted for a natural win.
+Calculates the settlement for each player based on the given score configuration.
 
 -   **Parameters**:
 
-    -   `players`: An array of player's hands (type: `Hand<number[]>[]`).
-    -   `isAlertNatural`: An array indicating if a player alerts for natural (type: `boolean[]`).
+    -   `playerData`: An array of player data to settle (type: `PlayerData[]`).
 
 -   **Return Value**: An array of settlements for each player (type: `Settlement[]`).
