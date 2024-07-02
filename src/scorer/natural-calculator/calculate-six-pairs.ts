@@ -5,14 +5,11 @@ export const calculateSixPairs = (
     sameRankCounter: Map<number, number[]>,
     rankMap: Map<number, number[]>,
 ): NaturalScore | undefined => {
-    if (
-        sameRankCounter.get(2)?.length === 6 ||
-        (sameRankCounter.get(3)?.length === 1 &&
-            sameRankCounter.get(2)?.length === 5) ||
-        (sameRankCounter.get(4)?.length ?? 0) * 4 +
-            (sameRankCounter.get(2)?.length ?? 0) * 2 ===
-            12
-    ) {
+    const pair = sameRankCounter.get(2)?.length || 0;
+    const trio = sameRankCounter.get(3)?.length || 0;
+    const quadruple = sameRankCounter.get(4)?.length || 0;
+
+    if (quadruple * 4 + (pair + trio) * 2 === 12) {
         const maxCard = Math.max(
             ...(sameRankCounter.get(2) ?? []),
             ...(sameRankCounter.get(3) ?? []),

@@ -6,7 +6,7 @@ import {
     isLowStraight,
     isOnePair,
     isThreeOfAKind,
-    isTwoPair,
+    isTwoPairs,
 } from "./hand-type-checker";
 import { countSameRank, statisticCard } from "../helper/card-helpers";
 import { SegmentScore } from "../types";
@@ -56,7 +56,7 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
     } else {
         const sameRankCounter = countSameRank(rankMap);
         const onePair = isOnePair(sameRankCounter);
-        const twoPairs = isTwoPair(sameRankCounter);
+        const twoPairs = isTwoPairs(sameRankCounter);
         const threeOfAKind = isThreeOfAKind(sameRankCounter);
         const fullHouse = isFullHouse(sameRankCounter);
 

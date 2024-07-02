@@ -1,4 +1,4 @@
-import { Hand, SegmentScore, Settlement } from "../types";
+import { Hand, ScoreConfig, SegmentScore, Settlement } from "../types";
 
 export const initSettlement: Settlement = {
     crack: {
@@ -51,4 +51,15 @@ export const initRoyaltyScore = {
     front: {},
     middle: {},
     back: {},
+};
+
+export const initScoreConfig: ScoreConfig = {
+    normal: 0,
+    royalty: initRoyaltyScore,
+    pusoy: {
+        partial: 0,
+        full: 0,
+    },
+    crack: 0,
+    natural: {},
 };

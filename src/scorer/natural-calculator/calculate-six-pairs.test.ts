@@ -32,6 +32,30 @@ describe(calculateSixPairs.name, () => {
                 suit: 1,
             },
         ],
+        [
+            [39, 36, 28, 18, 16, 19, 17, 37, 31, 32, 33, 35, 34],
+            {
+                type: NaturalType.SixPairs,
+                rank: 9,
+                suit: 3,
+            },
+        ],
+        [
+            [3, 13, 15, 1, 11, 10, 21, 43, 24, 23, 40, 47, 44],
+            {
+                type: NaturalType.SixPairs,
+                rank: 11,
+                suit: 3,
+            },
+        ],
+        [
+            [45, 11, 10, 2, 3, 0, 1, 9, 8, 5, 6, 7, 4],
+            {
+                type: NaturalType.SixPairs,
+                rank: 2,
+                suit: 3,
+            },
+        ],
     ])("%j should be %o", (cards, expected) => {
         const { rankMap } = statisticCard(cards);
         const sameRankCounter = countSameRank(rankMap);
