@@ -7,8 +7,8 @@ export const calculateSixPairs = (
 ): NaturalScore | undefined => {
     if (
         sameRankCounter.get(2)?.length === 6 ||
-        (sameRankCounter.get(3)?.length === 5 &&
-            sameRankCounter.get(2)?.length === 1) ||
+        (sameRankCounter.get(3)?.length === 1 &&
+            sameRankCounter.get(2)?.length === 5) ||
         (sameRankCounter.get(4)?.length ?? 0) * 4 +
             (sameRankCounter.get(2)?.length ?? 0) * 2 ===
             12

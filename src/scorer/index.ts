@@ -1,3 +1,3 @@
-export { calculateSegmentScore } from "./scorer";
+export { calculateSegmentScore } from "./calculate-segment-score";
 export { isCrack } from "./is-crack";
-export { checkNatural } from "./natural-checker";
+export { calculateNaturalScore } from "./natural-calculator/calculate-natural-score";

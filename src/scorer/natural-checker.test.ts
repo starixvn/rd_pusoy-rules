@@ -2,7 +2,7 @@ import { NaturalDisplay, NaturalType } from "../const";
 import { isLarger } from "../helper/card-helpers";
 import { ScoreConfig } from "../types";
 import { checkNatural } from "./natural-checker";
-import { calculateSegmentScore } from "./scorer";
+import { calculateSegmentScore } from "./calculate-segment-score";
 
 const scoreConfig: ScoreConfig = {
     normal: 1,
