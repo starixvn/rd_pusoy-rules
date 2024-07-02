@@ -1,5 +1,9 @@
-import { NaturalDisplay, NaturalType } from "../const";
-import { initScoreConfig, initSettlement } from "../helper/initializer";
+import {
+    NaturalDisplay,
+    NaturalType,
+    initScoreConfig,
+    initSettlement,
+} from "../const";
 import { calculateNaturalAndCrack } from "./calculate-natural-and-crack";
 
 describe(calculateNaturalAndCrack.name, () => {

@@ -1,11 +1,12 @@
-import { HandType, HandTypeDisplay } from "../const";
-import { isLarger } from "../helper/card-helpers";
 import {
+    HandType,
+    HandTypeDisplay,
     initHandScore,
     initNormalScore,
     initRoyaltyScore,
     initSettlement,
-} from "../helper/initializer";
+} from "../const";
+import { isLarger } from "../helper/card-helpers";
 import { accumulateFromOtherMap, pushItem } from "../helper/map-helpers";
 import { subtractValue, sumOrInsertValueByKey } from "../helper/object-helpers";
 import { Hand, ScoreConfig, SegmentScore, Settlement } from "../types";

@@ -1,6 +1,5 @@
-import { NaturalDisplay } from "../const";
+import { NaturalDisplay, initSettlement } from "../const";
 import { isLarger } from "../helper/card-helpers";
-import { initSettlement } from "../helper/initializer";
 import { subtractValue, sumOrInsertValueByKey } from "../helper/object-helpers";
 import { NaturalScore, ScoreConfig, Settlement } from "../types";
 

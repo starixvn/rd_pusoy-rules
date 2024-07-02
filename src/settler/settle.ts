@@ -1,6 +1,5 @@
-import { NaturalType } from "../const";
+import { NaturalType, initSettlement } from "../const";
 import { sortIncrease } from "../helper/array-helpers";
-import { initSettlement } from "../helper/initializer";
 import {
     calculateNaturalScore,
     calculateSegmentScore,
