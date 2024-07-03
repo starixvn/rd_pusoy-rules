@@ -1,6 +1,5 @@
 import { calculateThreeFlushes } from "./calculate-three-flushes";
 import { calculateSegmentScore } from "../calculate-segment-score";
-import { NaturalType } from "../../const";
 
 describe(calculateThreeFlushes.name, () => {
     test.each([
@@ -19,14 +18,17 @@ describe(calculateThreeFlushes.name, () => {
             },
         ],
     ])("%j should be undefined", (hand) => {
+        // Arrange
         const handScore = {
             front: calculateSegmentScore(hand.front),
             middle: calculateSegmentScore(hand.middle),
             back: calculateSegmentScore(hand.back),
         };
 
+        // Act
         const actual = calculateThreeFlushes(hand, handScore);
 
+        // Assert
         expect(actual).toBe(undefined);
     });
     test.each([
@@ -37,7 +39,6 @@ describe(calculateThreeFlushes.name, () => {
                 back: [1, 13, 21, 29, 45],
             },
             {
-                type: NaturalType.ThreeFlushes,
                 rank: 330434,
                 suit: 1,
             },
@@ -49,20 +50,44 @@ describe(calculateThreeFlushes.name, () => {
                 back: [26, 34, 42, 38, 50],
             },
             {
-                type: NaturalType.ThreeFlushes,
                 rank: 366333,
                 suit: 2,
             },
         ],
+        [
+            {
+                front: [10, 2, 26],
+                middle: [9, 21, 41, 29, 25],
+                back: [23, 27, 31, 35, 39],
+            },
+            {
+                rank: 9,
+                suit: 3,
+            },
+        ],
+        [
+            {
+                front: [2, 26, 10],
+                middle: [44, 32, 36, 40, 48],
+                back: [34, 38, 42, 46, 50],
+            },
+            {
+                rank: 12,
+                suit: 2,
+            },
+        ],
     ])("%j should return %o", (hand, expected) => {
+        // Arrange
         const handScore = {
             front: calculateSegmentScore(hand.front),
             middle: calculateSegmentScore(hand.middle),
             back: calculateSegmentScore(hand.back),
         };
 
+        // Act
         const actual = calculateThreeFlushes(hand, handScore);
 
+        // Assert
         expect(actual).toMatchObject(expected);
     });
 });

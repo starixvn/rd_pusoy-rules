@@ -1,18 +1,33 @@
-import { ScoreConfig } from "./types";
-import { createPusoyRules } from "./settler";
+import { ScoreConfig } from "../src/types";
+import { createPusoyRules } from "../src/settler";
 
 const scoreConfig: ScoreConfig = {
     normal: 1,
-    natural: {
-        threeFlushes: 3,
-        sixPairs: 6,
-        dragon: 12,
-        threeStraights: 3,
-    },
+    natural: [
+        {
+            name: "dragon",
+            units: 12,
+        },
+        {
+            name: "sixPairs",
+            units: 6,
+        },
+        {
+            name: "threeFlushes",
+            units: 3,
+        },
+        {
+            name: "threeStraights",
+            units: 3,
+        },
+    ],
     crack: 6,
     pusoy: {
         partial: 3,
-        full: 6,
+        full: {
+            isWinnerTakeAll: true,
+            units: 6,
+        },
     },
     royalty: {
         front: {

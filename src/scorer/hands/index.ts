@@ -1,4 +1,4 @@
-export { isContinuous } from "./is-continuous";
+export { isStraight as isStraight } from "./is-straight";
 
 export { isLowStraight } from "./is-low-straight";
 

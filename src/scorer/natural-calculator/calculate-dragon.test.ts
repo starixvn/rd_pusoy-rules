@@ -1,4 +1,3 @@
-import { NaturalType } from "../../const";
 import { statisticCard } from "../../helper/card-helpers";
 import { getSortedIncreaseKeys } from "../../helper/map-helpers";
 import { calculateDragon } from "./calculate-dragon";
@@ -8,11 +7,14 @@ describe(calculateDragon.name, () => {
         [[44, 36, 41, 30, 33, 47, 39, 49, 24, 28, 32, 18, 21]],
         [[45, 33, 37, 17, 32, 44, 47, 51, 1, 10, 24, 23, 39]],
     ])("%d should be undefined", (cards) => {
+        // Arrange
         const { rankMap } = statisticCard(cards);
         const sortedRank = getSortedIncreaseKeys(rankMap);
 
+        // Act
         const actual = calculateDragon(sortedRank, cards);
 
+        // Assert
         expect(actual).toBe(undefined);
     });
 
@@ -20,7 +22,6 @@ describe(calculateDragon.name, () => {
         [
             [30, 36, 48, 2, 11, 12, 18, 22, 6, 35, 25, 46, 41],
             {
-                type: NaturalType.Dragon,
                 rank: 48,
                 suit: 0,
             },
@@ -28,17 +29,19 @@ describe(calculateDragon.name, () => {
         [
             [30, 36, 51, 2, 11, 12, 18, 22, 6, 35, 25, 46, 41],
             {
-                type: NaturalType.Dragon,
                 rank: 51,
                 suit: 0,
             },
         ],
     ])("%d should be %o", (cards, expected) => {
+        // Arrange
         const { rankMap } = statisticCard(cards);
         const sortedRank = getSortedIncreaseKeys(rankMap);
 
+        // Act
         const actual = calculateDragon(sortedRank, cards);
 
+        // Assert
         expect(actual).toMatchObject(expected);
     });
 });

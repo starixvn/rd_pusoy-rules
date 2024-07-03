@@ -1,4 +1,10 @@
-import { Hand, ScoreConfig, SegmentScore, Settlement } from "./types";
+import {
+    Hand,
+    NaturalScore,
+    ScoreConfig,
+    SegmentScore,
+    Settlement,
+} from "./types";
 
 export enum HandType {
     Unknown = 0,
@@ -28,21 +34,29 @@ export const HandTypeDisplay = {
     [HandType.Unknown]: "unknown",
 };
 
-export enum NaturalType {
-    Unknown = 0,
-    ThreeStraights = 1,
-    ThreeFlushes = 2,
-    SixPairs = 3,
-    Dragon = 4,
+// export enum NaturalType {
+//     Unknown = 0,
+//     ThreeStraights = 1,
+//     ThreeFlushes = 2,
+//     SixPairs = 3,
+//     Dragon = 4,
+// }
+
+export enum Natural {
+    Unknown = "unknown",
+    ThreeStraights = "threeStraights",
+    ThreeFlushes = "threeFlushes",
+    SixPairs = "sixPairs",
+    Dragon = "dragon",
 }
 
-export const NaturalDisplay = {
-    [NaturalType.ThreeStraights]: "threeStraights",
-    [NaturalType.ThreeFlushes]: "threeFlushes",
-    [NaturalType.Dragon]: "dragon",
-    [NaturalType.SixPairs]: "sixPairs",
-    [NaturalType.Unknown]: "unknown",
-};
+// export const NaturalDisplay = {
+//     [NaturalType.ThreeStraights]: "threeStraights",
+//     [NaturalType.ThreeFlushes]: "threeFlushes",
+//     [NaturalType.Dragon]: "dragon",
+//     [NaturalType.SixPairs]: "sixPairs",
+//     [NaturalType.Unknown]: "unknown",
+// };
 
 export enum HandPosition {
     Front = "front",
@@ -110,8 +124,19 @@ export const initScoreConfig: ScoreConfig = {
     royalty: initRoyaltyScore,
     pusoy: {
         partial: 0,
-        full: 0,
+        full: {
+            isWinnerTakeAll: false,
+            units: 0,
+        },
     },
     crack: 0,
-    natural: {},
+    natural: [],
+};
+
+export const initNaturalScore: NaturalScore = {
+    rank: 0,
+    suit: 0,
+    type: 0,
+    units: 0,
+    name: Natural.Unknown,
 };

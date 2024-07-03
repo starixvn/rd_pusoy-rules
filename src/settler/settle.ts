@@ -1,4 +1,4 @@
-import { NaturalType, initSettlement } from "../const";
+import { Natural, initSettlement } from "../const";
 import { sortIncrease } from "../helper/array-helpers";
 import {
     calculateNaturalScore,
@@ -73,7 +73,7 @@ const classifyPlayers = (
                 handScore,
                 scoreConfig.natural,
             );
-            if (naturalScore.type !== NaturalType.Unknown) {
+            if (naturalScore.name !== Natural.Unknown) {
                 naturalPlayers.set(i, naturalScore);
 
                 continue;

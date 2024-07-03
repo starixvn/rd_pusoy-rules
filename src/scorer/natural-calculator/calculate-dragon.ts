@@ -1,14 +1,12 @@
-import { NaturalType } from "../../const";
 import { NaturalScore } from "../../types";
-import { isContinuous } from "../hand-type-checker";
+import { isStraight } from "../hands";
 
 export const calculateDragon = (
     sortedRank: number[],
     cards: number[],
-): NaturalScore | undefined => {
-    if (isContinuous(sortedRank) && sortedRank.length === cards.length) {
+): Partial<NaturalScore> | undefined => {
+    if (isStraight(sortedRank) && sortedRank.length === cards.length) {
         return {
-            type: NaturalType.Dragon,
             rank: Math.max(...cards),
             suit: 0,
         };

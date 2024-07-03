@@ -1,7 +1,6 @@
 import {
     HandType,
     HandTypeDisplay,
-    initHandScore,
     initNormalScore,
     initRoyaltyScore,
     initSettlement,
@@ -32,12 +31,8 @@ export const compareHands = (
     const compareHandPlayerIds = Array.from(compareHandPlayers.keys());
     for (let i = 0; i < compareHandPlayerIds.length - 1; i++) {
         for (let j = i + 1; j < compareHandPlayerIds.length; j++) {
-            const player1 =
-                compareHandPlayers.get(compareHandPlayerIds[i]) ||
-                initHandScore;
-            const player2 =
-                compareHandPlayers.get(compareHandPlayerIds[j]) ||
-                initHandScore;
+            const player1 = compareHandPlayers.get(compareHandPlayerIds[i])!;
+            const player2 = compareHandPlayers.get(compareHandPlayerIds[j])!;
 
             const front = isLarger(player1.front, player2.front) ? 1 : -1;
             const middle = isLarger(player1.middle, player2.middle) ? 1 : -1;
@@ -107,15 +102,81 @@ export const compareHands = (
             );
         }
     }
-    result = calculateFullPusoy(
-        result,
-        pusoyPlayers,
-        numberOfPlayer,
-        scoreConfig,
-    );
+    if (scoreConfig.pusoy.full.units > 0) {
+        result = calculateFullPusoy(
+            result,
+            pusoyPlayers,
+            numberOfPlayer,
+            scoreConfig,
+        );
+    }
 
     return result;
 };
+
+const updateResultByCompareSegment = (
+    result: Map<number, Settlement>,
+    compareHandPlayerIds: number[],
+    position: number,
+    pusoyScore: Record<string, number>,
+    royaltyScore: Hand<Record<string, number>>,
+    handScore: { front: number; middle: number; back: number },
+    updateSegmentScore: Record<string, number>,
+) => {
+    const newResult = new Map(result);
+    const oldValue: Settlement | undefined = newResult.get(
+        compareHandPlayerIds[position],
+    );
+    newResult.set(compareHandPlayerIds[position], {
+        ...initSettlement,
+        ...oldValue,
+        pusoy: {
+            partial: {
+                ...oldValue?.pusoy?.partial,
+                ...pusoyScore,
+            },
+            full: 0,
+        },
+        royalty: {
+            front: sumOrInsertValueByKey(
+                oldValue?.royalty?.front || {},
+                royaltyScore.front,
+            ),
+            middle: sumOrInsertValueByKey(
+                oldValue?.royalty?.middle || {},
+                royaltyScore.middle,
+            ),
+            back: sumOrInsertValueByKey(
+                oldValue?.royalty?.back || {},
+                royaltyScore.back,
+            ),
+        },
+        normal: addNormalScore(
+            {
+                ...initNormalScore,
+                ...oldValue?.normal,
+            },
+            {
+                ...handScore,
+                ...updateSegmentScore,
+            },
+        ),
+    });
+
+    return newResult;
+};
+
+const addNormalScore = (
+    a: { front: number; middle: number; back: number },
+    b: { front: number; middle: number; back: number },
+): Hand<number> => {
+    return {
+        front: a.front + b.front,
+        middle: a.middle + b.middle,
+        back: a.back + b.back,
+    };
+};
+
 const calculatePusoy = (
     frontScore: number,
     middleScore: number,
@@ -215,59 +276,7 @@ const getRoyaltyScore = (
     return royaltyScore ? { [key]: royaltyScore * sign } : {};
 };
 
-const updateResultByCompareSegment = (
-    result: Map<number, Settlement>,
-    compareHandPlayerIds: number[],
-    position: number,
-    pusoyScore: Record<string, number>,
-    royaltyScore: Hand<Record<string, number>>,
-    handScore: { front: number; middle: number; back: number },
-    updateSegmentScore: Record<string, number>,
-) => {
-    const newResult = new Map(result);
-    const oldValue: Settlement | undefined = newResult.get(
-        compareHandPlayerIds[position],
-    );
-    newResult.set(compareHandPlayerIds[position], {
-        ...initSettlement,
-        ...oldValue,
-        pusoy: {
-            partial: {
-                ...oldValue?.pusoy?.partial,
-                ...pusoyScore,
-            },
-            full: 0,
-        },
-        royalty: {
-            front: sumOrInsertValueByKey(
-                oldValue?.royalty?.front || {},
-                royaltyScore.front,
-            ),
-            middle: sumOrInsertValueByKey(
-                oldValue?.royalty?.middle || {},
-                royaltyScore.middle,
-            ),
-            back: sumOrInsertValueByKey(
-                oldValue?.royalty?.back || {},
-                royaltyScore.back,
-            ),
-        },
-        normal: addNormalScore(
-            {
-                ...initNormalScore,
-                ...oldValue?.normal,
-            },
-            {
-                ...handScore,
-                ...updateSegmentScore,
-            },
-        ),
-    });
-
-    return newResult;
-};
-
-export const calculateFullPusoy = (
+const calculateFullPusoy = (
     currentResult: Map<number, Settlement>,
     pusoyPlayers: Map<number, number[]>,
     numberOfPlayers: number,
@@ -282,18 +291,19 @@ export const calculateFullPusoy = (
                 ...oldResult,
                 pusoy: {
                     partial: {},
-                    full: scoreConfig.pusoy.full * value.length,
+                    full: scoreConfig.pusoy.full.units * value.length,
                 },
             });
 
             for (const other of value) {
                 const oldResult = result.get(other);
-                const fullPusoyScore =
-                    -scoreConfig.pusoy.full +
-                    Object.entries(oldResult!.pusoy.partial)
-                        .filter(([k]) => k !== key.toString())
-                        .map(([, v]) => v)
-                        .reduce((a, b) => a + b, 0);
+                const fullPusoyScore = scoreConfig.pusoy.full.isWinnerTakeAll
+                    ? -scoreConfig.pusoy.full.units +
+                      Object.entries(oldResult!.pusoy.partial)
+                          .filter(([k]) => k !== key.toString())
+                          .map(([, v]) => v)
+                          .reduce((a, b) => a + b, 0)
+                    : -scoreConfig.pusoy.full.units;
                 result.set(other, {
                     ...initSettlement,
                     ...oldResult,
@@ -310,15 +320,4 @@ export const calculateFullPusoy = (
     }
 
     return result;
-};
-
-const addNormalScore = (
-    a: { front: number; middle: number; back: number },
-    b: { front: number; middle: number; back: number },
-): Hand<number> => {
-    return {
-        front: a.front + b.front,
-        middle: a.middle + b.middle,
-        back: a.back + b.back,
-    };
 };

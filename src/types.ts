@@ -1,4 +1,4 @@
-import { HandType, NaturalType } from "./const";
+import { HandType, Natural } from "./const";
 
 export type CardCollectionScore<T> = {
     type: T;
@@ -8,7 +8,10 @@ export type CardCollectionScore<T> = {
 
 export type SegmentScore = CardCollectionScore<HandType>;
 
-export type NaturalScore = CardCollectionScore<NaturalType>;
+export type NaturalScore = CardCollectionScore<number> & {
+    units: number;
+    name: string;
+};
 
 export type NaturalCheckResult = {
     isNatural: boolean;
@@ -45,15 +48,21 @@ export type Settlement = {
     sum: number;
 };
 
+export type NaturalConfig = {
+    name: string;
+    units: number;
+};
+
 export type ScoreConfig = {
     crack: number;
     normal: number;
     royalty: Hand<Record<string, number>>;
-    natural: {
-        [key: string]: number;
-    };
+    natural: NaturalConfig[];
     pusoy: {
         partial: number;
-        full: number;
+        full: {
+            isWinnerTakeAll: boolean;
+            units: number;
+        };
     };
 };

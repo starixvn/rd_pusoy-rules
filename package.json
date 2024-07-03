@@ -4,13 +4,17 @@
     "description": "A TypeScript library for supporting settle Pusoy Game",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "jest": {
+        "resetMocks": true
+    },
     "files": [
         "/dist"
     ],
     "type": "commonjs",
     "scripts": {
         "dev": "tsx src/index.ts",
-        "test-coverage": "jest --coverage",
+        "test-coverage": "jest --coverage --testPathIgnorePatterns=tests",
+        "integration-test": "jest --testPathPattern=tests/",
         "build": "tsc",
         "lint": "eslint .",
         "reg": "npm set registry http://npm.lumigame.com",

@@ -1,6 +1,5 @@
 import { calculateThreeStraights } from "./calculate-three-straights";
 import { calculateSegmentScore } from "../calculate-segment-score";
-import { NaturalType } from "../../const";
 
 describe(calculateThreeStraights.name, () => {
     test.each([
@@ -19,14 +18,17 @@ describe(calculateThreeStraights.name, () => {
             },
         ],
     ])("%j should be undefined", (hand) => {
+        // Arrange
         const handScore = {
             front: calculateSegmentScore(hand.front),
             middle: calculateSegmentScore(hand.middle),
             back: calculateSegmentScore(hand.back),
         };
 
+        // Act
         const actual = calculateThreeStraights(hand, handScore);
 
+        // Assert
         expect(actual).toBe(undefined);
     });
     test.each([
@@ -37,7 +39,6 @@ describe(calculateThreeStraights.name, () => {
                 back: [26, 34, 42, 38, 29],
             },
             {
-                type: NaturalType.ThreeStraights,
                 rank: 10,
                 suit: 2,
             },
@@ -49,20 +50,22 @@ describe(calculateThreeStraights.name, () => {
                 back: [32, 36, 43, 51, 45],
             },
             {
-                type: NaturalType.ThreeStraights,
                 rank: 12,
                 suit: 3,
             },
         ],
     ])("%j should return %o", (hand, expected) => {
+        // Arrange
         const handScore = {
             front: calculateSegmentScore(hand.front),
             middle: calculateSegmentScore(hand.middle),
             back: calculateSegmentScore(hand.back),
         };
 
+        // Act
         const actual = calculateThreeStraights(hand, handScore);
 
+        // Assert
         expect(actual).toMatchObject(expected);
     });
 });

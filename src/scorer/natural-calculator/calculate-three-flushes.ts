@@ -1,11 +1,11 @@
-import { HandType, NaturalType } from "../../const";
+import { HandType } from "../../const";
 import { statisticCard } from "../../helper/card-helpers";
 import { Hand, NaturalScore, SegmentScore } from "../../types";
 
 export const calculateThreeFlushes = (
     hand: Hand<number[]>,
     handScore: Hand<SegmentScore>,
-): NaturalScore | undefined => {
+): Partial<NaturalScore> | undefined => {
     const { suitSet: frontSuitSet } = statisticCard(hand.front);
     if (
         (handScore.back.type === HandType.Flush ||
@@ -17,7 +17,6 @@ export const calculateThreeFlushes = (
         frontSuitSet.size === 1
     ) {
         return {
-            type: NaturalType.ThreeFlushes,
             rank: handScore.back.rank,
             suit: Math.max(...hand.back) % 4,
         };

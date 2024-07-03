@@ -1,7 +1,7 @@
-import { NaturalDisplay, initSettlement } from "../const";
+import { Natural, initSettlement } from "../const";
 import { isLarger } from "../helper/card-helpers";
 import { subtractValue, sumOrInsertValueByKey } from "../helper/object-helpers";
-import { NaturalScore, ScoreConfig, Settlement } from "../types";
+import { NaturalConfig, NaturalScore, ScoreConfig, Settlement } from "../types";
 
 export const calculateNaturalAndCrack = (
     tempResult: Map<number, Settlement>,
@@ -58,7 +58,7 @@ export const calculateNaturalAndCrack = (
 };
 
 const settleNatural = (
-    naturalScoreConfig: Record<string, number>,
+    naturalScoreConfig: NaturalConfig[],
     naturalScore1: NaturalScore | undefined,
     naturalScore2: NaturalScore | undefined,
 ): {
@@ -68,27 +68,20 @@ const settleNatural = (
     let player1Result = {};
 
     if (naturalScore1 && naturalScore2) {
-        const key1 = NaturalDisplay[naturalScore1!.type];
-        const key2 = NaturalDisplay[naturalScore2!.type];
-
         player1Result = isLarger(naturalScore1!, naturalScore2!)
             ? {
-                  [key1]: naturalScoreConfig[key1],
+                  [naturalScore1.name]: naturalScore1.units,
               }
             : {
-                  [key2]: -naturalScoreConfig[key2],
+                  [naturalScore2.name]: -naturalScore2.units,
               };
     } else if (naturalScore1) {
-        const key1 = NaturalDisplay[naturalScore1!.type];
-
         player1Result = {
-            [key1]: naturalScoreConfig[key1],
+            [naturalScore1.name]: naturalScore1.units,
         };
     } else if (naturalScore2) {
-        const key2 = NaturalDisplay[naturalScore2!.type];
-
         player1Result = {
-            [key2]: -naturalScoreConfig[key2],
+            [naturalScore2.name]: -naturalScore2.units,
         };
     }
 

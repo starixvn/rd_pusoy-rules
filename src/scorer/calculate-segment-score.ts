@@ -1,13 +1,13 @@
 import { HandType, ROYAL_STRAIGHT } from "../const";
 import {
-    isContinuous,
+    isStraight,
     isFourOfAKind,
     isFullHouse,
     isLowStraight,
     isOnePair,
     isThreeOfAKind,
     isTwoPairs,
-} from "./hand-type-checker";
+} from "./hands";
 import { countSameRank, statisticCard } from "../helper/card-helpers";
 import { SegmentScore } from "../types";
 import { sortIncrease } from "../helper/array-helpers";
@@ -17,13 +17,9 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
     const { rankMap, suitSet } = statisticCard(cards);
     if (cards.length === rankMap.size) {
         const rankSorted = getSortedIncreaseKeys(rankMap);
-        const lowStraightCards = isLowStraight(rankSorted);
 
-        if (
-            cards.length === 5 &&
-            (isContinuous(rankSorted) || lowStraightCards)
-        ) {
-            const maxRank = lowStraightCards
+        if (cards.length === 5 && isStraight(rankSorted, true)) {
+            const maxRank = isLowStraight(rankSorted)
                 ? rankSorted[rankSorted.length - 2]
                 : rankSorted[rankSorted.length - 1];
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);

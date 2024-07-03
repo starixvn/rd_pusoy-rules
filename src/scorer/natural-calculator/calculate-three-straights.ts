@@ -1,22 +1,21 @@
-import { HandType, NaturalType } from "../../const";
+import { HandType } from "../../const";
 import { sortIncrease } from "../../helper/array-helpers";
 import { Hand, NaturalScore, SegmentScore } from "../../types";
-import { isContinuous, isLowStraight } from "../hand-type-checker";
+import { isStraight, isLowStraight } from "../hands";
 
 export const calculateThreeStraights = (
     hand: Hand<number[]>,
     handScore: Hand<SegmentScore>,
-): NaturalScore | undefined => {
+): Partial<NaturalScore> | undefined => {
     const sortedRankAtFront = sortIncrease(
         hand.front.map((c) => Math.floor(c / 4)),
     );
     if (
         handScore.back.type === HandType.Straight &&
         handScore.middle.type === HandType.Straight &&
-        (isContinuous(sortedRankAtFront) || isLowStraight(sortedRankAtFront))
+        isStraight(sortedRankAtFront, true)
     ) {
         return {
-            type: NaturalType.ThreeStraights,
             rank: handScore.back.rank,
             suit: Math.max(...hand.back) % 4,
         };
