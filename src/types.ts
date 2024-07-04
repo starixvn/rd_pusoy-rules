@@ -1,4 +1,4 @@
-import { HandType, Natural } from "./const";
+import { HandType, HandTypeRank, Natural } from "./const";
 
 export type CardCollectionScore<T> = {
     type: T;
@@ -6,12 +6,18 @@ export type CardCollectionScore<T> = {
     suit: number;
 };
 
-export type SegmentScore = CardCollectionScore<HandType>;
+export type SegmentScore = CardCollectionScore<HandTypeRank>;
 
-export type NaturalScore = CardCollectionScore<number> & {
+export type NaturalScore = CardCollectionScore<number> & NaturalUnit;
+
+export type PusoyGameUnit<T> = {
     units: number;
-    name: string;
+    name: T;
 };
+
+export type NaturalUnit = PusoyGameUnit<Natural>;
+
+export type RoyaltyUnit = PusoyGameUnit<HandType>;
 
 export type NaturalCheckResult = {
     isNatural: boolean;
@@ -24,23 +30,16 @@ export type Hand<DataType> = {
     back: DataType;
 };
 
-export type PlayerData = {
-    hand: Hand<number[]>;
-    isAlertNatural: boolean;
-};
-
 export type Settlement = {
     crack: {
         isCrack: boolean;
-        score: number;
+        units: number;
     };
-    natural: {
-        [key: string]: number;
-    };
-    royalty: Hand<Record<string, number>>;
+    natural: NaturalUnit;
+    royalty: Hand<RoyaltyUnit>;
     normal: Hand<number>;
     pusoy: {
-        partial: {
+        mini: {
             [key: string]: number;
         };
         full: number;
@@ -48,18 +47,13 @@ export type Settlement = {
     sum: number;
 };
 
-export type NaturalConfig = {
-    name: string;
-    units: number;
-};
-
 export type ScoreConfig = {
     crack: number;
     normal: number;
     royalty: Hand<Record<string, number>>;
-    natural: NaturalConfig[];
+    natural: NaturalUnit[];
     pusoy: {
-        partial: number;
+        mini: number;
         full: {
             isWinnerTakeAll: boolean;
             units: number;

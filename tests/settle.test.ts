@@ -1,29 +1,30 @@
 import { ScoreConfig } from "../src/types";
 import { createPusoyRules } from "../src/settler";
+import { Natural } from "../src/const";
 
 const scoreConfig: ScoreConfig = {
     normal: 1,
     natural: [
         {
-            name: "dragon",
+            name: Natural.Dragon,
             units: 12,
         },
         {
-            name: "sixPairs",
+            name: Natural.SixPairs,
             units: 6,
         },
         {
-            name: "threeFlushes",
+            name: Natural.ThreeFlushes,
             units: 3,
         },
         {
-            name: "threeStraights",
+            name: Natural.ThreeStraights,
             units: 3,
         },
     ],
     crack: 6,
     pusoy: {
-        partial: 3,
+        mini: 3,
         full: {
             isWinnerTakeAll: true,
             units: 6,
@@ -150,12 +151,7 @@ describe("settle", () => {
         ])(
             "sum score p0 %j, p1 %j, p2 %j, p3 %j should be %j (%s)",
             (p0, p1, p2, p3, expected, caseName) => {
-                const playerData = [p0, p1, p2, p3].map((p) => ({
-                    hand: p,
-                    isAlertNatural: true,
-                }));
-
-                const result = pusoy.settle(playerData);
+                const result = pusoy.settle([p0, p1, p2, p3]);
                 console.log(`${caseName} \n`, result);
 
                 const sum = result.map((s) => s.sum);

@@ -1,4 +1,4 @@
-import { HandType, ROYAL_STRAIGHT } from "../const";
+import { HandTypeRank, ROYAL_STRAIGHT } from "../const";
 import {
     isStraight,
     isFourOfAKind,
@@ -24,11 +24,11 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
                 : rankSorted[rankSorted.length - 1];
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
 
-            let typeScore = HandType.Straight;
+            let typeScore = HandTypeRank.Straight;
             if (rankSorted.join(",") === ROYAL_STRAIGHT && suitSet.size === 1) {
-                typeScore = HandType.RoyalFlush;
+                typeScore = HandTypeRank.RoyalFlush;
             } else if (suitSet.size === 1) {
-                typeScore = HandType.StraightFlush;
+                typeScore = HandTypeRank.StraightFlush;
             }
 
             return {
@@ -43,8 +43,8 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             return {
                 type:
                     suitSet.size === 1 && cards.length === 5
-                        ? HandType.Flush
-                        : HandType.HighCard,
+                        ? HandTypeRank.Flush
+                        : HandTypeRank.HighCard,
                 rank: highCardBaseScore(rankSorted, 5, 13),
                 suit: maxSuit,
             };
@@ -66,7 +66,7 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             const handScore = highCardBaseScore([...single, ...pairs], 5, 13);
 
             return {
-                type: twoPairs ? HandType.TwoPairs : HandType.OnePair,
+                type: twoPairs ? HandTypeRank.TwoPairs : HandTypeRank.OnePair,
                 rank: handScore,
                 suit: maxSuit,
             };
@@ -77,7 +77,9 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
 
             return {
-                type: fullHouse ? HandType.FullHouse : HandType.ThreeOfAKind,
+                type: fullHouse
+                    ? HandTypeRank.FullHouse
+                    : HandTypeRank.ThreeOfAKind,
                 rank: maxRank,
                 suit: maxSuit,
             };
@@ -87,13 +89,13 @@ export const calculateSegmentScore = (cards: number[]): SegmentScore => {
             const maxRank = Math.max(...quad);
             const maxSuit = getMaxSuitByMaxRank(rankMap, maxRank);
             return {
-                type: HandType.FourOfAKind,
+                type: HandTypeRank.FourOfAKind,
                 rank: maxRank,
                 suit: maxSuit,
             };
         }
         return {
-            type: HandType.Unknown,
+            type: HandTypeRank.Unknown,
             rank: 0,
             suit: 0,
         };

@@ -1,4 +1,4 @@
-import { HandType } from "../const";
+import { HandTypeRank } from "../const";
 import { isCrack } from "./is-crack";
 
 describe("Crack Checker", () => {
@@ -6,17 +6,17 @@ describe("Crack Checker", () => {
         [
             {
                 front: {
-                    type: HandType.TwoPairs,
+                    type: HandTypeRank.TwoPairs,
                     suit: 0,
                     rank: 0,
                 },
                 middle: {
-                    type: HandType.OnePair,
+                    type: HandTypeRank.OnePair,
                     suit: 0,
                     rank: 0,
                 },
                 back: {
-                    type: HandType.Flush,
+                    type: HandTypeRank.Flush,
                     suit: 0,
                     rank: 0,
                 },
@@ -26,17 +26,17 @@ describe("Crack Checker", () => {
         [
             {
                 front: {
-                    type: HandType.HighCard,
+                    type: HandTypeRank.HighCard,
                     suit: 0,
                     rank: 3,
                 },
                 middle: {
-                    type: HandType.HighCard,
+                    type: HandTypeRank.HighCard,
                     suit: 0,
                     rank: 2,
                 },
                 back: {
-                    type: HandType.Flush,
+                    type: HandTypeRank.Flush,
                     suit: 0,
                     rank: 0,
                 },
@@ -46,17 +46,17 @@ describe("Crack Checker", () => {
         [
             {
                 front: {
-                    type: HandType.HighCard,
+                    type: HandTypeRank.HighCard,
                     suit: 0,
                     rank: 3,
                 },
                 middle: {
-                    type: HandType.HighCard,
+                    type: HandTypeRank.HighCard,
                     suit: 1,
                     rank: 3,
                 },
                 back: {
-                    type: HandType.HighCard,
+                    type: HandTypeRank.HighCard,
                     suit: 0,
                     rank: 3,
                 },
@@ -66,17 +66,17 @@ describe("Crack Checker", () => {
         [
             {
                 front: {
-                    type: HandType.HighCard,
+                    type: HandTypeRank.HighCard,
                     suit: 0,
                     rank: 3,
                 },
                 middle: {
-                    type: HandType.OnePair,
+                    type: HandTypeRank.OnePair,
                     suit: 1,
                     rank: 3,
                 },
                 back: {
-                    type: HandType.TwoPairs,
+                    type: HandTypeRank.TwoPairs,
                     suit: 0,
                     rank: 3,
                 },

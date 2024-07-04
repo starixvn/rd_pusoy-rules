@@ -1,7 +1,6 @@
 import { Natural, initSettlement } from "../const";
 import { isLarger } from "../helper/card-helpers";
-import { subtractValue, sumOrInsertValueByKey } from "../helper/object-helpers";
-import { NaturalConfig, NaturalScore, ScoreConfig, Settlement } from "../types";
+import { NaturalScore, NaturalUnit, ScoreConfig, Settlement } from "../types";
 
 export const calculateNaturalAndCrack = (
     tempResult: Map<number, Settlement>,
@@ -27,11 +26,7 @@ export const calculateNaturalAndCrack = (
             const {
                 player1Result: naturalResult1,
                 player2Result: naturalResult2,
-            } = settleNatural(
-                scoreConfig.natural,
-                naturalPlayers.get(i),
-                naturalPlayers.get(j),
-            );
+            } = settleNatural(naturalPlayers.get(i), naturalPlayers.get(j));
             result = updateOrInsertSettleResultByNaturalAndCrack(
                 result,
                 oldResult1,
@@ -58,37 +53,36 @@ export const calculateNaturalAndCrack = (
 };
 
 const settleNatural = (
-    naturalScoreConfig: NaturalConfig[],
     naturalScore1: NaturalScore | undefined,
     naturalScore2: NaturalScore | undefined,
 ): {
-    player1Result: Record<string, number>;
-    player2Result: Record<string, number>;
+    player1Result: NaturalUnit;
+    player2Result: NaturalUnit;
 } => {
-    let player1Result = {};
+    const player1Result: NaturalUnit = {
+        name: naturalScore1?.name || Natural.Unknown,
+        units: 0,
+    };
+    const player2Result: NaturalUnit = {
+        name: naturalScore2?.name || Natural.Unknown,
+        units: 0,
+    };
 
     if (naturalScore1 && naturalScore2) {
-        player1Result = isLarger(naturalScore1!, naturalScore2!)
-            ? {
-                  [naturalScore1.name]: naturalScore1.units,
-              }
-            : {
-                  [naturalScore2.name]: -naturalScore2.units,
-              };
+        player1Result.units = isLarger(naturalScore1!, naturalScore2!)
+            ? naturalScore1.units
+            : -naturalScore2.units;
     } else if (naturalScore1) {
-        player1Result = {
-            [naturalScore1.name]: naturalScore1.units,
-        };
+        player1Result.units = naturalScore1.units;
     } else if (naturalScore2) {
-        player1Result = {
-            [naturalScore2.name]: -naturalScore2.units,
-        };
+        player1Result.units = -naturalScore2.units;
     }
+
+    player2Result.units = -player1Result.units;
 
     return {
         player1Result,
-
-        player2Result: subtractValue(player1Result),
+        player2Result,
     };
 };
 
@@ -99,23 +93,23 @@ const updateOrInsertSettleResultByNaturalAndCrack = (
     opponentPosition: number,
     crackPlayers: Set<number>,
     scoreConfig: ScoreConfig,
-    naturalResult1: Record<string, number>,
+    naturalResult: NaturalUnit,
 ) => {
     const newResult = new Map(resultMap);
 
     const crackScore =
         (crackPlayers.has(position) ? -scoreConfig.crack : 0) +
         (crackPlayers.has(opponentPosition) ? scoreConfig.crack : 0) +
-        (oldResult?.crack?.score || 0);
+        (oldResult?.crack?.units || 0);
 
     if (!oldResult) {
         newResult.set(position, {
             ...initSettlement,
             crack: {
                 isCrack: crackPlayers.has(position),
-                score: crackScore,
+                units: crackScore,
             },
-            natural: naturalResult1,
+            natural: naturalResult,
         });
 
         return newResult;
@@ -124,9 +118,12 @@ const updateOrInsertSettleResultByNaturalAndCrack = (
         ...oldResult!,
         crack: {
             ...oldResult!.crack,
-            score: crackScore,
+            units: crackScore,
         },
-        natural: sumOrInsertValueByKey(oldResult!.natural, naturalResult1),
+        natural: {
+            name: naturalResult.name,
+            units: oldResult!.natural.units + naturalResult.units,
+        },
     });
 
     return newResult;

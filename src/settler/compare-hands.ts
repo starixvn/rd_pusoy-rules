@@ -1,14 +1,18 @@
 import {
     HandType,
-    HandTypeDisplay,
     initNormalScore,
-    initRoyaltyScore,
     initSettlement,
+    HandTypeMap,
 } from "../const";
 import { isLarger } from "../helper/card-helpers";
 import { accumulateFromOtherMap, pushItem } from "../helper/map-helpers";
-import { subtractValue, sumOrInsertValueByKey } from "../helper/object-helpers";
-import { Hand, ScoreConfig, SegmentScore, Settlement } from "../types";
+import {
+    Hand,
+    RoyaltyUnit,
+    ScoreConfig,
+    SegmentScore,
+    Settlement,
+} from "../types";
 
 export const compareHands = (
     currentResult: Map<number, Settlement>,
@@ -53,20 +57,23 @@ export const compareHands = (
             );
             pusoyPlayers = accumulateFromOtherMap(pusoyPlayers, pusoyMapTemp);
 
-            const { royaltyScore1, royaltyScore2 } = calculateRoyalty(
+            const royalty1 = getRoyalty(player1, scoreConfig.royalty);
+            const royalty2 = getRoyalty(player2, scoreConfig.royalty);
+            const { royaltyScore1, royaltyScore2 } = settleRoyalty(
                 front,
                 middle,
                 back,
-                player1,
-                player2,
-                scoreConfig,
+                royalty1,
+                royalty2,
             );
 
             const updateSegmentScore: Record<string, number> = {};
-            Object.entries(royaltyScore1).forEach(([key, value]) => {
-                if (Object.keys(value).length > 0) {
-                    updateSegmentScore[key] = 0;
-                }
+            [royalty1, royalty2].forEach((royalty) => {
+                Object.entries(royalty).forEach(([key, value]) => {
+                    if (value.name !== HandType.Unknown) {
+                        updateSegmentScore[key] = 0;
+                    }
+                });
             });
 
             const handScore1 = {
@@ -119,7 +126,7 @@ const updateResultByCompareSegment = (
     compareHandPlayerIds: number[],
     position: number,
     pusoyScore: Record<string, number>,
-    royaltyScore: Hand<Record<string, number>>,
+    royaltyScore: Hand<RoyaltyUnit>,
     handScore: { front: number; middle: number; back: number },
     updateSegmentScore: Record<string, number>,
 ) => {
@@ -131,25 +138,31 @@ const updateResultByCompareSegment = (
         ...initSettlement,
         ...oldValue,
         pusoy: {
-            partial: {
-                ...oldValue?.pusoy?.partial,
+            mini: {
+                ...oldValue?.pusoy?.mini,
                 ...pusoyScore,
             },
             full: 0,
         },
         royalty: {
-            front: sumOrInsertValueByKey(
-                oldValue?.royalty?.front || {},
-                royaltyScore.front,
-            ),
-            middle: sumOrInsertValueByKey(
-                oldValue?.royalty?.middle || {},
-                royaltyScore.middle,
-            ),
-            back: sumOrInsertValueByKey(
-                oldValue?.royalty?.back || {},
-                royaltyScore.back,
-            ),
+            front: {
+                name: royaltyScore.front.name,
+                units:
+                    royaltyScore.front.units +
+                    (oldValue?.royalty?.front?.units || 0),
+            },
+            middle: {
+                name: royaltyScore.middle.name,
+                units:
+                    royaltyScore.middle.units +
+                    (oldValue?.royalty?.middle?.units || 0),
+            },
+            back: {
+                name: royaltyScore.back.name,
+                units:
+                    royaltyScore.back.units +
+                    (oldValue?.royalty?.back?.units || 0),
+            },
         },
         normal: addNormalScore(
             {
@@ -191,8 +204,7 @@ const calculatePusoy = (
     let pusoyMap: Map<number, number[]> = new Map();
     const sum = frontScore + middleScore + backScore;
     if (Math.abs(sum) === 3) {
-        const score =
-            Math.floor(sum / Math.abs(sum)) * scoreConfig.pusoy.partial;
+        const score = Math.floor(sum / Math.abs(sum)) * scoreConfig.pusoy.mini;
 
         if (sum > 0) {
             pusoyMap = pushItem(
@@ -215,65 +227,36 @@ const calculatePusoy = (
     return { pusoyScore1, pusoyScore2, pusoyMap };
 };
 
-const calculateRoyalty = (
+const settleRoyalty = (
     frontScore: number,
     middleScore: number,
     backScore: number,
-    handScore1: Hand<SegmentScore>,
-    handScore2: Hand<SegmentScore>,
-    scoreConfig: ScoreConfig,
+    royalty1: Hand<RoyaltyUnit>,
+    royalty2: Hand<RoyaltyUnit>,
 ) => {
-    const royaltyScore1: Hand<Record<string, number>> = { ...initRoyaltyScore };
-    const royaltyScore2: Hand<Record<string, number>> = { ...initRoyaltyScore };
+    const royaltyFront =
+        frontScore > 0 ? royalty1.front.units : -royalty2.front.units;
+    const royaltyMiddle =
+        middleScore > 0 ? royalty1.middle.units : -royalty2.middle.units;
+    const royaltyBack =
+        backScore > 0 ? royalty1.back.units : -royalty2.back.units;
 
-    royaltyScore1.front = getRoyaltyScore(
-        scoreConfig.royalty.front,
-        handScore1.front.type,
-        handScore2.front.type,
-        frontScore,
-    );
-    royaltyScore2.front = subtractValue(royaltyScore1.front);
+    const royaltyScore1 = {
+        front: { ...royalty1.front, units: royaltyFront },
+        middle: { ...royalty1.middle, units: royaltyMiddle },
+        back: { ...royalty1.back, units: royaltyBack },
+    };
 
-    royaltyScore1.middle = getRoyaltyScore(
-        scoreConfig.royalty.middle,
-        handScore1.middle.type,
-        handScore2.middle.type,
-        middleScore,
-    );
-    royaltyScore2.middle = subtractValue(royaltyScore1.middle);
-
-    royaltyScore1.back = getRoyaltyScore(
-        scoreConfig.royalty.back,
-        handScore1.back.type,
-        handScore2.back.type,
-        backScore,
-    );
-    royaltyScore2.back = subtractValue(royaltyScore1.back);
+    const royaltyScore2 = {
+        front: { ...royalty2.front, units: -royaltyFront },
+        middle: { ...royalty2.middle, units: -royaltyMiddle },
+        back: { ...royalty2.back, units: -royaltyBack },
+    };
 
     return {
         royaltyScore1,
         royaltyScore2,
     };
-};
-
-const getRoyaltyScore = (
-    royaltySegmentConfig: Record<string, number>,
-    handType1: HandType,
-    handType2: HandType,
-    segmentScore: number,
-): Record<string, number> => {
-    let royaltyScore: number | undefined = undefined;
-    let sign = 1;
-    let key = HandTypeDisplay[handType1];
-
-    if (segmentScore < 0) {
-        key = HandTypeDisplay[handType2];
-        sign = -1;
-    }
-
-    royaltyScore = royaltySegmentConfig[key];
-
-    return royaltyScore ? { [key]: royaltyScore * sign } : {};
 };
 
 const calculateFullPusoy = (
@@ -290,7 +273,7 @@ const calculateFullPusoy = (
                 ...initSettlement,
                 ...oldResult,
                 pusoy: {
-                    partial: {},
+                    mini: {},
                     full: scoreConfig.pusoy.full.units * value.length,
                 },
             });
@@ -299,7 +282,7 @@ const calculateFullPusoy = (
                 const oldResult = result.get(other);
                 const fullPusoyScore = scoreConfig.pusoy.full.isWinnerTakeAll
                     ? -scoreConfig.pusoy.full.units +
-                      Object.entries(oldResult!.pusoy.partial)
+                      Object.entries(oldResult!.pusoy.mini)
                           .filter(([k]) => k !== key.toString())
                           .map(([, v]) => v)
                           .reduce((a, b) => a + b, 0)
@@ -308,8 +291,8 @@ const calculateFullPusoy = (
                     ...initSettlement,
                     ...oldResult,
                     pusoy: {
-                        partial: {
-                            ...oldResult!.pusoy.partial,
+                        mini: {
+                            ...oldResult!.pusoy.mini,
                             [key]: 0,
                         },
                         full: fullPusoyScore,
@@ -320,4 +303,38 @@ const calculateFullPusoy = (
     }
 
     return result;
+};
+
+const getRoyalty = (
+    handScore1: Hand<SegmentScore>,
+    royalty: Hand<Record<string, number>>,
+): Hand<RoyaltyUnit> => {
+    const frontUnits = royalty.front[HandTypeMap[handScore1.front.type]] || 0;
+    const middleUnits =
+        royalty.middle[HandTypeMap[handScore1.middle.type]] || 0;
+    const backUnits = royalty.back[HandTypeMap[handScore1.back.type]] || 0;
+
+    return {
+        front: {
+            name:
+                frontUnits > 0
+                    ? HandTypeMap[handScore1.front.type]
+                    : HandType.Unknown,
+            units: frontUnits,
+        },
+        middle: {
+            name:
+                middleUnits > 0
+                    ? HandTypeMap[handScore1.middle.type]
+                    : HandType.Unknown,
+            units: middleUnits,
+        },
+        back: {
+            name:
+                backUnits > 0
+                    ? HandTypeMap[handScore1.back.type]
+                    : HandType.Unknown,
+            units: backUnits,
+        },
+    };
 };

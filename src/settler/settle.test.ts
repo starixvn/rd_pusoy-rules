@@ -1,17 +1,11 @@
 import { settle } from "./settle";
-import {
-    calculateNaturalScore,
-    calculateSegmentScore,
-    isCrack,
-} from "../scorer";
+import { calculateNaturalScore, isCrack } from "../scorer";
 import { calculateNaturalAndCrack } from "./calculate-natural-and-crack";
 import { compareHands } from "./compare-hands";
-import { PlayerData } from "../types";
 import { Natural, initScoreConfig, initSettlement } from "../const";
-import { isThreeOfAKind } from "../scorer/hands";
+import { Hand } from "../types";
 
 const calculateNaturalScoreMock = calculateNaturalScore as jest.Mock;
-const calculateSegmentScoreMock = calculateSegmentScore as jest.Mock;
 const isCrackMock = isCrack as jest.Mock;
 const calculateNaturalAndCrackMock = calculateNaturalAndCrack as jest.Mock;
 const compareHandsMock = compareHands as jest.Mock;
@@ -21,57 +15,30 @@ jest.mock("./calculate-natural-and-crack");
 jest.mock("./compare-hands");
 
 describe(settle.name, () => {
-    describe("when have 2 players alert natural", () => {
-        describe("and they are not crack", () => {
-            it("should call calculate natural score 2 times", () => {
-                // Arrange
-                const p0: PlayerData = {
-                    hand: { front: [0], middle: [0], back: [0] },
-                    isAlertNatural: true,
-                };
-                const p1: PlayerData = {
-                    hand: { front: [0], middle: [0], back: [0] },
-                    isAlertNatural: false,
-                };
-                calculateNaturalScoreMock.mockReturnValue({
-                    name: Natural.Unknown,
-                });
+    describe("when have all players crack", () => {
+        it("should not call calculate natural score", () => {
+            // Arrange
+            const p0: Hand<number[]> = {
+                front: [0],
+                middle: [0],
+                back: [0],
+            };
+            isCrackMock.mockReturnValue(true);
 
-                // Act
-                settle([p0, p0, p1], initScoreConfig);
+            // Act
+            settle([p0, p0, p0], initScoreConfig);
 
-                // Assert
-                expect(calculateNaturalScoreMock).toHaveBeenCalledTimes(2);
-            });
-        });
-
-        describe("and they are crack", () => {
-            it("should not call calculate natural score", () => {
-                // Arrange
-                const p0: PlayerData = {
-                    hand: { front: [0], middle: [0], back: [0] },
-                    isAlertNatural: true,
-                };
-                const p1: PlayerData = {
-                    hand: { front: [0], middle: [0], back: [0] },
-                    isAlertNatural: false,
-                };
-                isCrackMock.mockReturnValue(true);
-
-                // Act
-                settle([p0, p0, p1], initScoreConfig);
-
-                // Assert
-                expect(calculateNaturalScoreMock).toHaveBeenCalledTimes(0);
-            });
+            // Assert
+            expect(calculateNaturalScoreMock).toHaveBeenCalledTimes(0);
         });
     });
     describe("when have all player alert natural and they have natural", () => {
         it("should call call calculate natural and crack with all player", () => {
             // Arrange
-            const p0: PlayerData = {
-                hand: { front: [0], middle: [0], back: [0] },
-                isAlertNatural: true,
+            const p0: Hand<number[]> = {
+                front: [0],
+                middle: [0],
+                back: [0],
             };
             calculateNaturalScoreMock.mockReturnValue({
                 name: Natural.Dragon,
@@ -105,26 +72,14 @@ describe(settle.name, () => {
                     [
                         0,
                         {
+                            ...initSettlement,
                             crack: {
                                 isCrack: true,
-                                score: -9,
+                                units: -9,
                             },
                             natural: {
-                                dragon: -5,
-                            },
-                            normal: {
-                                front: 0,
-                                middle: 0,
-                                back: 0,
-                            },
-                            pusoy: {
-                                full: 0,
-                                partial: {},
-                            },
-                            royalty: {
-                                front: {},
-                                middle: {},
-                                back: {},
+                                name: "",
+                                units: -5,
                             },
                             sum: 0,
                         },
@@ -132,26 +87,14 @@ describe(settle.name, () => {
                     [
                         1,
                         {
+                            ...initSettlement,
                             crack: {
                                 isCrack: false,
-                                score: 3,
+                                units: 3,
                             },
                             natural: {
-                                dragon: 15,
-                            },
-                            normal: {
-                                front: 0,
-                                middle: 0,
-                                back: 0,
-                            },
-                            pusoy: {
-                                full: 0,
-                                partial: {},
-                            },
-                            royalty: {
-                                front: {},
-                                middle: {},
-                                back: {},
+                                name: "dragon",
+                                units: 15,
                             },
                             sum: 0,
                         },
@@ -161,10 +104,11 @@ describe(settle.name, () => {
                         {
                             crack: {
                                 isCrack: false,
-                                score: 3,
+                                units: 3,
                             },
                             natural: {
-                                dragon: -5,
+                                name: "",
+                                units: -5,
                             },
                             normal: {
                                 front: 1,
@@ -173,14 +117,14 @@ describe(settle.name, () => {
                             },
                             pusoy: {
                                 full: 0,
-                                partial: {},
+                                mini: {},
                             },
                             royalty: {
-                                front: {},
+                                ...initSettlement.royalty,
                                 middle: {
-                                    royalFlush: -3,
+                                    name: "",
+                                    units: -3,
                                 },
-                                back: {},
                             },
                             sum: 0,
                         },
@@ -188,28 +132,26 @@ describe(settle.name, () => {
                     [
                         3,
                         {
+                            ...initSettlement,
                             crack: {
                                 isCrack: false,
-                                score: 3,
+                                units: 3,
                             },
                             natural: {
-                                dragon: -5,
+                                name: "",
+                                units: -5,
                             },
                             normal: {
                                 front: -1,
                                 middle: 0,
                                 back: 1,
                             },
-                            pusoy: {
-                                full: 0,
-                                partial: {},
-                            },
                             royalty: {
-                                front: {},
+                                ...initSettlement.royalty,
                                 middle: {
-                                    royalFlush: 3,
+                                    name: "royalFlush",
+                                    units: 3,
                                 },
-                                back: {},
                             },
                             sum: 0,
                         },
@@ -222,29 +164,23 @@ describe(settle.name, () => {
                     [
                         0,
                         {
-                            crack: {
-                                isCrack: false,
-                                score: 0,
-                            },
-                            natural: {},
-                            normal: {
-                                front: 0,
-                                middle: 0,
-                                back: 0,
-                            },
+                            ...initSettlement,
                             pusoy: {
                                 full: 18,
-                                partial: {},
+                                mini: {},
                             },
                             royalty: {
                                 front: {
-                                    threeOfAKind: 9,
+                                    name: "threeOfAKind",
+                                    units: 9,
                                 },
                                 middle: {
-                                    royalFlush: 15,
+                                    name: "royalFlush",
+                                    units: 15,
                                 },
                                 back: {
-                                    royalFlush: 12,
+                                    name: "royalFlush",
+                                    units: 12,
                                 },
                             },
                             sum: 0,
@@ -253,11 +189,7 @@ describe(settle.name, () => {
                     [
                         1,
                         {
-                            crack: {
-                                isCrack: false,
-                                score: 0,
-                            },
-                            natural: {},
+                            ...initSettlement,
                             normal: {
                                 front: 2,
                                 middle: 0,
@@ -265,20 +197,23 @@ describe(settle.name, () => {
                             },
                             pusoy: {
                                 full: -3,
-                                partial: {
+                                mini: {
                                     "2": 3,
                                     "0": 0,
                                 },
                             },
                             royalty: {
                                 front: {
-                                    threeOfAKind: -3,
+                                    name: "",
+                                    units: -3,
                                 },
                                 middle: {
-                                    royalFlush: -5,
+                                    name: "",
+                                    units: -5,
                                 },
                                 back: {
-                                    royalFlush: -4,
+                                    name: "",
+                                    units: -4,
                                 },
                             },
                             sum: 0,
@@ -287,11 +222,7 @@ describe(settle.name, () => {
                     [
                         2,
                         {
-                            crack: {
-                                isCrack: false,
-                                score: 0,
-                            },
-                            natural: {},
+                            ...initSettlement,
                             normal: {
                                 front: 0,
                                 middle: -2,
@@ -299,20 +230,23 @@ describe(settle.name, () => {
                             },
                             pusoy: {
                                 full: -9,
-                                partial: {
+                                mini: {
                                     "1": -3,
                                     "0": 0,
                                 },
                             },
                             royalty: {
                                 front: {
-                                    threeOfAKind: -3,
+                                    name: "",
+                                    units: -3,
                                 },
                                 middle: {
-                                    royalFlush: -5,
+                                    name: "",
+                                    units: -5,
                                 },
                                 back: {
-                                    royalFlush: -4,
+                                    name: "",
+                                    units: -4,
                                 },
                             },
                             sum: 0,
@@ -321,11 +255,7 @@ describe(settle.name, () => {
                     [
                         3,
                         {
-                            crack: {
-                                isCrack: false,
-                                score: 0,
-                            },
-                            natural: {},
+                            ...initSettlement,
                             normal: {
                                 front: -2,
                                 middle: 2,
@@ -333,19 +263,22 @@ describe(settle.name, () => {
                             },
                             pusoy: {
                                 full: -6,
-                                partial: {
+                                mini: {
                                     "0": 0,
                                 },
                             },
                             royalty: {
                                 front: {
-                                    threeOfAKind: -3,
+                                    name: "",
+                                    units: -3,
                                 },
                                 middle: {
-                                    royalFlush: -5,
+                                    name: "",
+                                    units: -5,
                                 },
                                 back: {
-                                    royalFlush: -4,
+                                    name: "",
+                                    units: -4,
                                 },
                             },
                             sum: 0,
@@ -358,9 +291,10 @@ describe(settle.name, () => {
             "with settlement %o after all stage should return sum of settlement as %o",
             (settlement, expected) => {
                 // Arrange
-                const p0: PlayerData = {
-                    hand: { front: [0], middle: [0], back: [0] },
-                    isAlertNatural: true,
+                const p0: Hand<number[]> = {
+                    front: [0],
+                    middle: [0],
+                    back: [0],
                 };
                 compareHandsMock.mockReturnValue(settlement);
                 calculateNaturalScoreMock.mockReturnValue({

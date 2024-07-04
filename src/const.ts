@@ -6,7 +6,7 @@ import {
     Settlement,
 } from "./types";
 
-export enum HandType {
+export enum HandTypeRank {
     Unknown = 0,
     HighCard = 1,
     OnePair = 2,
@@ -20,18 +20,32 @@ export enum HandType {
     RoyalFlush = 10,
 }
 
-export const HandTypeDisplay = {
-    [HandType.HighCard]: "highCard",
-    [HandType.OnePair]: "onePair",
-    [HandType.TwoPairs]: "twoPairs",
-    [HandType.ThreeOfAKind]: "threeOfAKind",
-    [HandType.Straight]: "straight",
-    [HandType.Flush]: "flush",
-    [HandType.FullHouse]: "fullHouse",
-    [HandType.FourOfAKind]: "fourOfAKind",
-    [HandType.StraightFlush]: "straightFlush",
-    [HandType.RoyalFlush]: "royalFlush",
-    [HandType.Unknown]: "unknown",
+export enum HandType {
+    HighCard = "highCard",
+    OnePair = "onePair",
+    TwoPairs = "twoPairs",
+    ThreeOfAKind = "threeOfAKind",
+    Straight = "straight",
+    Flush = "flush",
+    FullHouse = "fullHouse",
+    FourOfAKind = "fourOfAKind",
+    StraightFlush = "straightFlush",
+    RoyalFlush = "royalFlush",
+    Unknown = "",
+}
+
+export const HandTypeMap = {
+    [HandTypeRank.HighCard]: HandType.HighCard,
+    [HandTypeRank.OnePair]: HandType.OnePair,
+    [HandTypeRank.TwoPairs]: HandType.TwoPairs,
+    [HandTypeRank.ThreeOfAKind]: HandType.ThreeOfAKind,
+    [HandTypeRank.Straight]: HandType.Straight,
+    [HandTypeRank.Flush]: HandType.Flush,
+    [HandTypeRank.FullHouse]: HandType.FullHouse,
+    [HandTypeRank.FourOfAKind]: HandType.FourOfAKind,
+    [HandTypeRank.StraightFlush]: HandType.StraightFlush,
+    [HandTypeRank.RoyalFlush]: HandType.RoyalFlush,
+    [HandTypeRank.Unknown]: HandType.Unknown,
 };
 
 // export enum NaturalType {
@@ -43,7 +57,7 @@ export const HandTypeDisplay = {
 // }
 
 export enum Natural {
-    Unknown = "unknown",
+    Unknown = "",
     ThreeStraights = "threeStraights",
     ThreeFlushes = "threeFlushes",
     SixPairs = "sixPairs",
@@ -69,9 +83,12 @@ export const ROYAL_STRAIGHT = "8,9,10,11,12";
 export const initSettlement: Settlement = {
     crack: {
         isCrack: false,
-        score: 0,
+        units: 0,
     },
-    natural: {},
+    natural: {
+        name: Natural.Unknown,
+        units: 0,
+    },
     normal: {
         front: 0,
         middle: 0,
@@ -79,12 +96,21 @@ export const initSettlement: Settlement = {
     },
     pusoy: {
         full: 0,
-        partial: {},
+        mini: {},
     },
     royalty: {
-        front: {},
-        middle: {},
-        back: {},
+        front: {
+            name: HandType.Unknown,
+            units: 0,
+        },
+        middle: {
+            name: HandType.Unknown,
+            units: 0,
+        },
+        back: {
+            name: HandType.Unknown,
+            units: 0,
+        },
     },
     sum: 0,
 };
@@ -123,7 +149,7 @@ export const initScoreConfig: ScoreConfig = {
     normal: 0,
     royalty: initRoyaltyScore,
     pusoy: {
-        partial: 0,
+        mini: 0,
         full: {
             isWinnerTakeAll: false,
             units: 0,

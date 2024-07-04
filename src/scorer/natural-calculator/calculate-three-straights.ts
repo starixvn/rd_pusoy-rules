@@ -1,7 +1,7 @@
-import { HandType } from "../../const";
+import { HandTypeRank } from "../../const";
 import { sortIncrease } from "../../helper/array-helpers";
 import { Hand, NaturalScore, SegmentScore } from "../../types";
-import { isStraight, isLowStraight } from "../hands";
+import { isStraight } from "../hands";
 
 export const calculateThreeStraights = (
     hand: Hand<number[]>,
@@ -11,8 +11,8 @@ export const calculateThreeStraights = (
         hand.front.map((c) => Math.floor(c / 4)),
     );
     if (
-        handScore.back.type === HandType.Straight &&
-        handScore.middle.type === HandType.Straight &&
+        handScore.back.type === HandTypeRank.Straight &&
+        handScore.middle.type === HandTypeRank.Straight &&
         isStraight(sortedRankAtFront, true)
     ) {
         return {

@@ -1,4 +1,4 @@
-import { initScoreConfig, initSettlement } from "../const";
+import { Natural, initScoreConfig, initSettlement } from "../const";
 import { calculateNaturalAndCrack } from "./calculate-natural-and-crack";
 
 describe(calculateNaturalAndCrack.name, () => {
@@ -8,11 +8,23 @@ describe(calculateNaturalAndCrack.name, () => {
                 naturalPlayers: new Map([
                     [
                         1,
-                        { type: 5, rank: 0, suit: 0, name: "dragon", units: 3 },
+                        {
+                            type: 5,
+                            rank: 0,
+                            suit: 0,
+                            name: Natural.Dragon,
+                            units: 3,
+                        },
                     ],
                     [
                         2,
-                        { type: 5, rank: 2, suit: 0, name: "dragon", units: 3 },
+                        {
+                            type: 5,
+                            rank: 2,
+                            suit: 0,
+                            name: Natural.Dragon,
+                            units: 3,
+                        },
                     ],
                 ]),
                 crackPlayers: new Set([0]),
@@ -27,9 +39,10 @@ describe(calculateNaturalAndCrack.name, () => {
                     0,
                     {
                         ...initSettlement,
-                        crack: { isCrack: true, score: -9 },
+                        crack: { isCrack: true, units: -9 },
                         natural: {
-                            dragon: -6,
+                            name: "",
+                            units: -6,
                         },
                     },
                 ],
@@ -37,9 +50,10 @@ describe(calculateNaturalAndCrack.name, () => {
                     1,
                     {
                         ...initSettlement,
-                        crack: { isCrack: false, score: 3 },
+                        crack: { isCrack: false, units: 3 },
                         natural: {
-                            dragon: 3,
+                            name: "dragon",
+                            units: 3,
                         },
                     },
                 ],
@@ -47,9 +61,10 @@ describe(calculateNaturalAndCrack.name, () => {
                     2,
                     {
                         ...initSettlement,
-                        crack: { isCrack: false, score: 3 },
+                        crack: { isCrack: false, units: 3 },
                         natural: {
-                            dragon: 9,
+                            name: "dragon",
+                            units: 9,
                         },
                     },
                 ],
@@ -57,9 +72,10 @@ describe(calculateNaturalAndCrack.name, () => {
                     3,
                     {
                         ...initSettlement,
-                        crack: { isCrack: false, score: 3 },
+                        crack: { isCrack: false, units: 3 },
                         natural: {
-                            dragon: -6,
+                            name: "",
+                            units: -6,
                         },
                     },
                 ],
@@ -74,7 +90,7 @@ describe(calculateNaturalAndCrack.name, () => {
                             type: 5,
                             rank: 2,
                             suit: 0,
-                            name: "dragon",
+                            name: Natural.Dragon,
                             units: 8,
                         },
                     ],
@@ -84,7 +100,7 @@ describe(calculateNaturalAndCrack.name, () => {
                             type: 4,
                             rank: 2,
                             suit: 0,
-                            name: "sixPairs",
+                            name: Natural.SixPairs,
                             units: 5,
                         },
                     ],
@@ -101,9 +117,10 @@ describe(calculateNaturalAndCrack.name, () => {
                     0,
                     {
                         ...initSettlement,
-                        crack: { isCrack: false, score: 3 },
+                        crack: { isCrack: false, units: 3 },
                         natural: {
-                            dragon: 24,
+                            name: "dragon",
+                            units: 24,
                         },
                     },
                 ],
@@ -111,10 +128,10 @@ describe(calculateNaturalAndCrack.name, () => {
                     1,
                     {
                         ...initSettlement,
-                        crack: { isCrack: false, score: 3 },
+                        crack: { isCrack: false, units: 3 },
                         natural: {
-                            dragon: -8,
-                            sixPairs: 10,
+                            name: "sixPairs",
+                            units: 2,
                         },
                     },
                 ],
@@ -122,10 +139,10 @@ describe(calculateNaturalAndCrack.name, () => {
                     2,
                     {
                         ...initSettlement,
-                        crack: { isCrack: true, score: -9 },
+                        crack: { isCrack: true, units: -9 },
                         natural: {
-                            dragon: -8,
-                            sixPairs: -5,
+                            name: "",
+                            units: -13,
                         },
                     },
                 ],
@@ -133,10 +150,10 @@ describe(calculateNaturalAndCrack.name, () => {
                     3,
                     {
                         ...initSettlement,
-                        crack: { isCrack: false, score: 3 },
+                        crack: { isCrack: false, units: 3 },
                         natural: {
-                            dragon: -8,
-                            sixPairs: -5,
+                            name: "",
+                            units: -13,
                         },
                     },
                 ],

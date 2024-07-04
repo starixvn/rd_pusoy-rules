@@ -1,5 +1,4 @@
-import { assert } from "console";
-import { HandType, initScoreConfig, initSettlement } from "../const";
+import { HandTypeRank, initScoreConfig, initSettlement } from "../const";
 import { compareHands } from "./compare-hands";
 
 describe(compareHands.name, () => {
@@ -19,7 +18,7 @@ describe(compareHands.name, () => {
                 },
             },
             pusoy: {
-                partial: 3,
+                mini: 3,
                 full: {
                     isWinnerTakeAll: true,
                     units: 6,
@@ -35,17 +34,17 @@ describe(compareHands.name, () => {
                             0,
                             {
                                 front: {
-                                    type: HandType.HighCard,
+                                    type: HandTypeRank.HighCard,
                                     suit: 0,
                                     rank: 1,
                                 },
                                 middle: {
-                                    type: HandType.Straight,
+                                    type: HandTypeRank.Straight,
                                     suit: 0,
                                     rank: 1,
                                 },
                                 back: {
-                                    type: HandType.Flush,
+                                    type: HandTypeRank.Flush,
                                     suit: 0,
                                     rank: 0,
                                 },
@@ -55,17 +54,17 @@ describe(compareHands.name, () => {
                             1,
                             {
                                 front: {
-                                    type: HandType.HighCard,
+                                    type: HandTypeRank.HighCard,
                                     suit: 0,
                                     rank: 0,
                                 },
                                 middle: {
-                                    type: HandType.TwoPairs,
+                                    type: HandTypeRank.TwoPairs,
                                     suit: 0,
                                     rank: 0,
                                 },
                                 back: {
-                                    type: HandType.Flush,
+                                    type: HandTypeRank.Flush,
                                     suit: 0,
                                     rank: 1,
                                 },
@@ -75,17 +74,17 @@ describe(compareHands.name, () => {
                             2,
                             {
                                 front: {
-                                    type: HandType.ThreeOfAKind,
+                                    type: HandTypeRank.ThreeOfAKind,
                                     suit: 0,
                                     rank: 0,
                                 },
                                 middle: {
-                                    type: HandType.ThreeOfAKind,
+                                    type: HandTypeRank.ThreeOfAKind,
                                     suit: 2,
                                     rank: 1,
                                 },
                                 back: {
-                                    type: HandType.Straight,
+                                    type: HandTypeRank.Straight,
                                     suit: 1,
                                     rank: 0,
                                 },
@@ -95,17 +94,17 @@ describe(compareHands.name, () => {
                             3,
                             {
                                 front: {
-                                    type: HandType.HighCard,
+                                    type: HandTypeRank.HighCard,
                                     suit: 2,
                                     rank: 3,
                                 },
                                 middle: {
-                                    type: HandType.Straight,
+                                    type: HandTypeRank.Straight,
                                     suit: 0,
                                     rank: 0,
                                 },
                                 back: {
-                                    type: HandType.FullHouse,
+                                    type: HandTypeRank.FullHouse,
                                     suit: 0,
                                     rank: 0,
                                 },
@@ -127,13 +126,20 @@ describe(compareHands.name, () => {
                             },
                             royalty: {
                                 front: {
-                                    threeOfAKind: -4,
+                                    name: "",
+                                    units: -4,
                                 },
-                                middle: {},
-                                back: {},
+                                middle: {
+                                    name: "",
+                                    units: 0,
+                                },
+                                back: {
+                                    name: "",
+                                    units: 0,
+                                },
                             },
                             pusoy: {
-                                partial: {},
+                                mini: {},
                                 full: 0,
                             },
                         },
@@ -149,13 +155,20 @@ describe(compareHands.name, () => {
                             },
                             royalty: {
                                 front: {
-                                    threeOfAKind: -4,
+                                    name: "",
+                                    units: -4,
                                 },
-                                middle: {},
-                                back: {},
+                                middle: {
+                                    name: "",
+                                    units: 0,
+                                },
+                                back: {
+                                    name: "",
+                                    units: 0,
+                                },
                             },
                             pusoy: {
-                                partial: {
+                                mini: {
                                     "3": -3,
                                 },
                                 full: 0,
@@ -173,13 +186,20 @@ describe(compareHands.name, () => {
                             },
                             royalty: {
                                 front: {
-                                    threeOfAKind: 12,
+                                    name: "threeOfAKind",
+                                    units: 12,
                                 },
-                                middle: {},
-                                back: {},
+                                middle: {
+                                    name: "",
+                                    units: 0,
+                                },
+                                back: {
+                                    name: "",
+                                    units: 0,
+                                },
                             },
                             pusoy: {
-                                partial: {},
+                                mini: {},
                                 full: 0,
                             },
                         },
@@ -195,13 +215,20 @@ describe(compareHands.name, () => {
                             },
                             royalty: {
                                 front: {
-                                    threeOfAKind: -4,
+                                    name: "",
+                                    units: -4,
                                 },
-                                middle: {},
-                                back: {},
+                                middle: {
+                                    name: "",
+                                    units: 0,
+                                },
+                                back: {
+                                    name: "",
+                                    units: 0,
+                                },
                             },
                             pusoy: {
-                                partial: {
+                                mini: {
                                     "1": 3,
                                 },
                                 full: 0,
@@ -217,17 +244,17 @@ describe(compareHands.name, () => {
                             0,
                             {
                                 front: {
-                                    type: HandType.OnePair,
+                                    type: HandTypeRank.OnePair,
                                     suit: 2,
                                     rank: 1,
                                 },
                                 middle: {
-                                    type: HandType.Straight,
+                                    type: HandTypeRank.Straight,
                                     suit: 0,
                                     rank: 1,
                                 },
                                 back: {
-                                    type: HandType.Flush,
+                                    type: HandTypeRank.Flush,
                                     suit: 0,
                                     rank: 0,
                                 },
@@ -237,17 +264,17 @@ describe(compareHands.name, () => {
                             1,
                             {
                                 front: {
-                                    type: HandType.HighCard,
+                                    type: HandTypeRank.HighCard,
                                     suit: 0,
                                     rank: 0,
                                 },
                                 middle: {
-                                    type: HandType.TwoPairs,
+                                    type: HandTypeRank.TwoPairs,
                                     suit: 0,
                                     rank: 0,
                                 },
                                 back: {
-                                    type: HandType.Flush,
+                                    type: HandTypeRank.Flush,
                                     suit: 0,
                                     rank: 1,
                                 },
@@ -257,17 +284,17 @@ describe(compareHands.name, () => {
                             2,
                             {
                                 front: {
-                                    type: HandType.OnePair,
+                                    type: HandTypeRank.OnePair,
                                     suit: 0,
                                     rank: 0,
                                 },
                                 middle: {
-                                    type: HandType.ThreeOfAKind,
+                                    type: HandTypeRank.ThreeOfAKind,
                                     suit: 2,
                                     rank: 1,
                                 },
                                 back: {
-                                    type: HandType.Straight,
+                                    type: HandTypeRank.Straight,
                                     suit: 1,
                                     rank: 0,
                                 },
@@ -277,17 +304,17 @@ describe(compareHands.name, () => {
                             3,
                             {
                                 front: {
-                                    type: HandType.OnePair,
+                                    type: HandTypeRank.OnePair,
                                     suit: 4,
                                     rank: 5,
                                 },
                                 middle: {
-                                    type: HandType.Straight,
+                                    type: HandTypeRank.Straight,
                                     suit: 0,
                                     rank: 3,
                                 },
                                 back: {
-                                    type: HandType.FullHouse,
+                                    type: HandTypeRank.FullHouse,
                                     suit: 0,
                                     rank: 0,
                                 },
@@ -307,13 +334,8 @@ describe(compareHands.name, () => {
                                 middle: 1,
                                 back: -1,
                             },
-                            royalty: {
-                                front: {},
-                                middle: {},
-                                back: {},
-                            },
                             pusoy: {
-                                partial: {
+                                mini: {
                                     "2": 3,
                                     "3": 0,
                                 },
@@ -330,13 +352,8 @@ describe(compareHands.name, () => {
                                 middle: -3,
                                 back: 1,
                             },
-                            royalty: {
-                                front: {},
-                                middle: {},
-                                back: {},
-                            },
                             pusoy: {
-                                partial: {
+                                mini: {
                                     "3": 0,
                                 },
                                 full: -6,
@@ -352,13 +369,8 @@ describe(compareHands.name, () => {
                                 middle: -1,
                                 back: -3,
                             },
-                            royalty: {
-                                front: {},
-                                middle: {},
-                                back: {},
-                            },
                             pusoy: {
-                                partial: {
+                                mini: {
                                     "0": -3,
                                     "3": 0,
                                 },
@@ -375,14 +387,109 @@ describe(compareHands.name, () => {
                                 middle: 3,
                                 back: 3,
                             },
-                            royalty: {
-                                front: {},
-                                middle: {},
-                                back: {},
-                            },
                             pusoy: {
-                                partial: {},
+                                mini: {},
                                 full: 18,
+                            },
+                        },
+                    ],
+                ]),
+            ],
+            [
+                {
+                    compareHandPlayers: new Map([
+                        [
+                            0,
+                            {
+                                front: {
+                                    type: HandTypeRank.OnePair,
+                                    suit: 2,
+                                    rank: 1,
+                                },
+                                middle: {
+                                    type: HandTypeRank.StraightFlush,
+                                    suit: 0,
+                                    rank: 1,
+                                },
+                                back: {
+                                    type: HandTypeRank.RoyalFlush,
+                                    suit: 0,
+                                    rank: 0,
+                                },
+                            },
+                        ],
+                        [
+                            1,
+                            {
+                                front: {
+                                    type: HandTypeRank.ThreeOfAKind,
+                                    suit: 0,
+                                    rank: 0,
+                                },
+                                middle: {
+                                    type: HandTypeRank.TwoPairs,
+                                    suit: 0,
+                                    rank: 0,
+                                },
+                                back: {
+                                    type: HandTypeRank.Flush,
+                                    suit: 0,
+                                    rank: 1,
+                                },
+                            },
+                        ],
+                    ]),
+                    scoreConfig,
+                    numberOfPlayer: 2,
+                },
+                new Map([
+                    [
+                        0,
+                        {
+                            ...initSettlement,
+                            normal: {
+                                front: 0,
+                                middle: 0,
+                                back: 0,
+                            },
+                            royalty: {
+                                front: {
+                                    name: "",
+                                    units: -4,
+                                },
+                                middle: {
+                                    name: "straightFlush",
+                                    units: 5,
+                                },
+                                back: {
+                                    name: "royalFlush",
+                                    units: 8,
+                                },
+                            },
+                        },
+                    ],
+                    [
+                        1,
+                        {
+                            ...initSettlement,
+                            normal: {
+                                front: 0,
+                                middle: 0,
+                                back: 0,
+                            },
+                            royalty: {
+                                front: {
+                                    name: "threeOfAKind",
+                                    units: 4,
+                                },
+                                middle: {
+                                    name: "",
+                                    units: -5,
+                                },
+                                back: {
+                                    name: "",
+                                    units: -8,
+                                },
                             },
                         },
                     ],
@@ -403,17 +510,17 @@ describe(compareHands.name, () => {
                         0,
                         {
                             front: {
-                                type: HandType.OnePair,
+                                type: HandTypeRank.OnePair,
                                 suit: 2,
                                 rank: 1,
                             },
                             middle: {
-                                type: HandType.Straight,
+                                type: HandTypeRank.Straight,
                                 suit: 0,
                                 rank: 1,
                             },
                             back: {
-                                type: HandType.Flush,
+                                type: HandTypeRank.Flush,
                                 suit: 0,
                                 rank: 0,
                             },
@@ -423,17 +530,17 @@ describe(compareHands.name, () => {
                         1,
                         {
                             front: {
-                                type: HandType.HighCard,
+                                type: HandTypeRank.HighCard,
                                 suit: 0,
                                 rank: 0,
                             },
                             middle: {
-                                type: HandType.TwoPairs,
+                                type: HandTypeRank.TwoPairs,
                                 suit: 0,
                                 rank: 0,
                             },
                             back: {
-                                type: HandType.Flush,
+                                type: HandTypeRank.Flush,
                                 suit: 0,
                                 rank: 1,
                             },
@@ -443,17 +550,17 @@ describe(compareHands.name, () => {
                         2,
                         {
                             front: {
-                                type: HandType.OnePair,
+                                type: HandTypeRank.OnePair,
                                 suit: 0,
                                 rank: 0,
                             },
                             middle: {
-                                type: HandType.ThreeOfAKind,
+                                type: HandTypeRank.ThreeOfAKind,
                                 suit: 2,
                                 rank: 1,
                             },
                             back: {
-                                type: HandType.Straight,
+                                type: HandTypeRank.Straight,
                                 suit: 1,
                                 rank: 0,
                             },
@@ -463,17 +570,17 @@ describe(compareHands.name, () => {
                         3,
                         {
                             front: {
-                                type: HandType.OnePair,
+                                type: HandTypeRank.OnePair,
                                 suit: 4,
                                 rank: 5,
                             },
                             middle: {
-                                type: HandType.Straight,
+                                type: HandTypeRank.Straight,
                                 suit: 0,
                                 rank: 3,
                             },
                             back: {
-                                type: HandType.FullHouse,
+                                type: HandTypeRank.FullHouse,
                                 suit: 0,
                                 rank: 0,
                             },
@@ -483,7 +590,7 @@ describe(compareHands.name, () => {
                 scoreConfig: {
                     ...initScoreConfig,
                     pusoy: {
-                        partial: 3,
+                        mini: 3,
                         full: {
                             isWinnerTakeAll: false,
                             units: 6,
@@ -512,17 +619,17 @@ describe(compareHands.name, () => {
                         0,
                         {
                             front: {
-                                type: HandType.OnePair,
+                                type: HandTypeRank.OnePair,
                                 suit: 2,
                                 rank: 1,
                             },
                             middle: {
-                                type: HandType.Straight,
+                                type: HandTypeRank.Straight,
                                 suit: 0,
                                 rank: 1,
                             },
                             back: {
-                                type: HandType.Flush,
+                                type: HandTypeRank.Flush,
                                 suit: 0,
                                 rank: 0,
                             },
@@ -532,17 +639,17 @@ describe(compareHands.name, () => {
                         1,
                         {
                             front: {
-                                type: HandType.HighCard,
+                                type: HandTypeRank.HighCard,
                                 suit: 0,
                                 rank: 0,
                             },
                             middle: {
-                                type: HandType.TwoPairs,
+                                type: HandTypeRank.TwoPairs,
                                 suit: 0,
                                 rank: 0,
                             },
                             back: {
-                                type: HandType.Flush,
+                                type: HandTypeRank.Flush,
                                 suit: 0,
                                 rank: 1,
                             },
@@ -552,17 +659,17 @@ describe(compareHands.name, () => {
                         2,
                         {
                             front: {
-                                type: HandType.OnePair,
+                                type: HandTypeRank.OnePair,
                                 suit: 0,
                                 rank: 0,
                             },
                             middle: {
-                                type: HandType.ThreeOfAKind,
+                                type: HandTypeRank.ThreeOfAKind,
                                 suit: 2,
                                 rank: 1,
                             },
                             back: {
-                                type: HandType.Straight,
+                                type: HandTypeRank.Straight,
                                 suit: 1,
                                 rank: 0,
                             },
@@ -572,17 +679,17 @@ describe(compareHands.name, () => {
                         3,
                         {
                             front: {
-                                type: HandType.OnePair,
+                                type: HandTypeRank.OnePair,
                                 suit: 4,
                                 rank: 5,
                             },
                             middle: {
-                                type: HandType.Straight,
+                                type: HandTypeRank.Straight,
                                 suit: 0,
                                 rank: 3,
                             },
                             back: {
-                                type: HandType.FullHouse,
+                                type: HandTypeRank.FullHouse,
                                 suit: 0,
                                 rank: 0,
                             },
@@ -592,7 +699,7 @@ describe(compareHands.name, () => {
                 scoreConfig: {
                     ...initScoreConfig,
                     pusoy: {
-                        partial: 3,
+                        mini: 3,
                         full: {
                             isWinnerTakeAll: false,
                             units: 0,
