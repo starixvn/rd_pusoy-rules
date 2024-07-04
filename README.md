@@ -27,7 +27,7 @@ const scoreConfig: ScoreConfig = {
     },
     crack: 6,
     pusoy: {
-        partial: 3,
+        mini: 3,
         full: 6,
     },
     royalty: {
@@ -49,28 +49,19 @@ const scoreConfig: ScoreConfig = {
 };
 
 const player1: Hand<number[]> = {
-    hand: {
-        front: [0, 2, 25],
-        middle: [44, 43, 24, 31, 29],
-        back: [51, 50, 15, 13, 47],
-    },
-    isAlertNatural: true,
+    front: [0, 2, 25],
+    middle: [44, 43, 24, 31, 29],
+    back: [51, 50, 15, 13, 47],
 };
 const player2: Hand<number[]> = {
-    hand: {
-        front: [16, 18, 19],
-        middle: [21, 10, 8, 9, 11],
-        back: [17, 6, 7, 4, 5],
-    },
-    isAlertNatural: false,
+    front: [16, 18, 19],
+    middle: [21, 10, 8, 9, 11],
+    back: [17, 6, 7, 4, 5],
 };
 const player3: Hand<number[]> = {
-    hand: {
-        front: [40, 1, 48],
-        middle: [3, 35, 14, 34, 30],
-        back: [45, 41, 36, 49, 33],
-    },
-    isAlertNatural: true,
+    front: [40, 1, 48],
+    middle: [3, 35, 14, 34, 30],
+    back: [45, 41, 36, 49, 33],
 };
 
 const pusoy = createPusoyRules(scoreConfig);
@@ -86,6 +77,6 @@ Calculates the settlement for each player based on the given score configuration
 
 -   **Parameters**:
 
-    -   `playerData`: An array of player data to settle (type: `PlayerData[]`).
+    -   `playerData`: An array of player data to settle (type: `Hand<number[]>[]`).
 
 -   **Return Value**: An array of settlements for each player (type: `Settlement[]`).

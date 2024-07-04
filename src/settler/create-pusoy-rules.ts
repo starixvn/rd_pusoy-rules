@@ -1,4 +1,4 @@
-import { PlayerData, ScoreConfig, Settlement } from "../types";
+import { Hand, ScoreConfig, Settlement } from "../types";
 import { settle } from "./settle";
 
 export const createPusoyRules = (scoreConfig: ScoreConfig) => {
@@ -6,10 +6,10 @@ export const createPusoyRules = (scoreConfig: ScoreConfig) => {
         /**
          * Calculates the settlement for each player based on the given score configuration.
          *
-         * @param {PlayerData[]} playerData - an array of player data to settle
+         * @param {Hand<number[]>[]} playerData - an array of player data to settle
          * @return {Settlement[]} An array of settlements for each player
          */
-        settle: (playerData: PlayerData[]): Settlement[] => {
+        settle: (playerData: Hand<number[]>[]): Settlement[] => {
             return settle(playerData, scoreConfig);
         },
     };

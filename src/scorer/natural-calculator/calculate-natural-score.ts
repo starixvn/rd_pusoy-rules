@@ -1,7 +1,7 @@
 import { Natural, initNaturalScore } from "../../const";
 import { countSameRank, statisticCard } from "../../helper/card-helpers";
 import { getSortedIncreaseKeys } from "../../helper/map-helpers";
-import { Hand, NaturalConfig, NaturalScore, SegmentScore } from "../../types";
+import { Hand, NaturalScore, NaturalUnit, SegmentScore } from "../../types";
 import { calculateDragon } from "./calculate-dragon";
 import { calculateSixPairs } from "./calculate-six-pairs";
 import { calculateThreeFlushes } from "./calculate-three-flushes";
@@ -10,7 +10,7 @@ import { calculateThreeStraights } from "./calculate-three-straights";
 export const calculateNaturalScore = (
     hand: Hand<number[]>,
     handScore: Hand<SegmentScore>,
-    naturalConfig: NaturalConfig[],
+    naturalConfig: NaturalUnit[],
 ): NaturalScore => {
     const cards = hand.front.concat(hand.middle).concat(hand.back);
     const { rankMap } = statisticCard(cards);
