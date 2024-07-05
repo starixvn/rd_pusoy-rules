@@ -48,14 +48,6 @@ export const HandTypeMap = {
     [HandTypeRank.Unknown]: HandType.Unknown,
 };
 
-// export enum NaturalType {
-//     Unknown = 0,
-//     ThreeStraights = 1,
-//     ThreeFlushes = 2,
-//     SixPairs = 3,
-//     Dragon = 4,
-// }
-
 export enum Natural {
     Unknown = "",
     ThreeStraights = "threeStraights",
@@ -63,14 +55,6 @@ export enum Natural {
     SixPairs = "sixPairs",
     Dragon = "dragon",
 }
-
-// export const NaturalDisplay = {
-//     [NaturalType.ThreeStraights]: "threeStraights",
-//     [NaturalType.ThreeFlushes]: "threeFlushes",
-//     [NaturalType.Dragon]: "dragon",
-//     [NaturalType.SixPairs]: "sixPairs",
-//     [NaturalType.Unknown]: "unknown",
-// };
 
 export enum HandPosition {
     Front = "front",
