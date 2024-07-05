@@ -39,7 +39,7 @@ describe(calculateNaturalScore.name, () => {
                     units: 4,
                 },
                 {
-                    name: "sameColor",
+                    name: "sameColor" as Natural,
                     units: 2,
                 },
             ];
