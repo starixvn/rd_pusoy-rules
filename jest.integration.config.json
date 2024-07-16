@@ -1,0 +1,13 @@
+{
+    "reporters": [
+        [
+            "jest-html-reporters",
+            {
+                "pageTitle": "Integration Test Report",
+                "publicPath": "./reports",
+                "filename": "report.html",
+                "openReport": true
+            }
+        ]
+    ]
+}
