@@ -7,3 +7,17 @@ include:
     - project: ci/core-cicd
       ref: main
       file: luminet.gitlab-ci.yml
+
+integration-test-settle:
+    stage: test
+    image: $NODEJS_IMAGE
+    before_script:
+        - npm run reg
+        - npm install
+    script:
+        - npm run integration-test
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - junit.xml
