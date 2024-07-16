@@ -9,6 +9,7 @@
                 "openReport": false,
                 "inlineSource": true
             }
-        ]
+        ],
+        "jest-junit"
     ]
 }

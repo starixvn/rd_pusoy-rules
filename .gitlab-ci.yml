@@ -3,8 +3,20 @@ variables:
     PUBLISH_NPM_IMAGE: $DOCKER_REG_LOCAL_URL/docker-hub/library/node:lts-slim
     ENABLE_TEST_JS: "true"
     PUBLISH_NPM: "true"
-    ENABLE_NODEJS_INTEGRATION_TEST: "true"
 include:
     - project: ci/core-cicd
       ref: main
       file: luminet.gitlab-ci.yml
+
+integration-test-settle:
+    stage: test
+    image: $NODEJS_IMAGE
+    before_script:
+        - npm install
+    script:
+        - npm run integration-test
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - junit.xml
