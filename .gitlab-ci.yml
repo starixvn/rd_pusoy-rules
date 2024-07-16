@@ -12,6 +12,7 @@ integration-test-settle:
     stage: test
     image: $NODEJS_IMAGE
     before_script:
+        - npm run reg
         - npm install
     script:
         - npm run integration-test
