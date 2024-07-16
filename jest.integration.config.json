@@ -6,7 +6,8 @@
                 "pageTitle": "Integration Test Report",
                 "publicPath": "./reports",
                 "filename": "report.html",
-                "openReport": true
+                "openReport": false,
+                "inlineSource": true
             }
         ]
     ]
