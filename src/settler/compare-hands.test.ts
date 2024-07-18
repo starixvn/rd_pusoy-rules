@@ -495,6 +495,167 @@ describe(compareHands.name, () => {
                     ],
                 ]),
             ],
+            [
+                {
+                    compareHandPlayers: new Map([
+                        [
+                            1,
+                            {
+                                front: {
+                                    type: HandTypeRank.HighCard,
+                                    suit: 0,
+                                    rank: 0,
+                                },
+                                middle: {
+                                    type: HandTypeRank.TwoPairs,
+                                    suit: 0,
+                                    rank: 0,
+                                },
+                                back: {
+                                    type: HandTypeRank.Flush,
+                                    suit: 0,
+                                    rank: 1,
+                                },
+                            },
+                        ],
+                        [
+                            2,
+                            {
+                                front: {
+                                    type: HandTypeRank.ThreeOfAKind,
+                                    suit: 0,
+                                    rank: 0,
+                                },
+                                middle: {
+                                    type: HandTypeRank.ThreeOfAKind,
+                                    suit: 2,
+                                    rank: 1,
+                                },
+                                back: {
+                                    type: HandTypeRank.Straight,
+                                    suit: 1,
+                                    rank: 0,
+                                },
+                            },
+                        ],
+                        [
+                            3,
+                            {
+                                front: {
+                                    type: HandTypeRank.HighCard,
+                                    suit: 2,
+                                    rank: 3,
+                                },
+                                middle: {
+                                    type: HandTypeRank.Straight,
+                                    suit: 0,
+                                    rank: 0,
+                                },
+                                back: {
+                                    type: HandTypeRank.FullHouse,
+                                    suit: 0,
+                                    rank: 0,
+                                },
+                            },
+                        ],
+                    ]),
+                    scoreConfig,
+                    numberOfPlayer: 4,
+                },
+                new Map([
+                    [
+                        1,
+                        {
+                            ...initSettlement,
+                            normal: {
+                                front: -1,
+                                middle: -2,
+                                back: 0,
+                            },
+                            royalty: {
+                                front: {
+                                    name: "",
+                                    units: -4,
+                                },
+                                middle: {
+                                    name: "",
+                                    units: 0,
+                                },
+                                back: {
+                                    name: "",
+                                    units: 0,
+                                },
+                            },
+                            pusoy: {
+                                mini: {
+                                    "3": -3,
+                                },
+                                full: 0,
+                            },
+                        },
+                    ],
+                    [
+                        2,
+                        {
+                            ...initSettlement,
+                            normal: {
+                                front: 0,
+                                middle: 0,
+                                back: -2,
+                            },
+                            royalty: {
+                                front: {
+                                    name: "threeOfAKind",
+                                    units: 8,
+                                },
+                                middle: {
+                                    name: "",
+                                    units: 0,
+                                },
+                                back: {
+                                    name: "",
+                                    units: 0,
+                                },
+                            },
+                            pusoy: {
+                                mini: {},
+                                full: 0,
+                            },
+                        },
+                    ],
+                    [
+                        3,
+                        {
+                            ...initSettlement,
+                            normal: {
+                                front: 1,
+                                middle: 2,
+                                back: 2,
+                            },
+                            royalty: {
+                                front: {
+                                    name: "",
+                                    units: -4,
+                                },
+                                middle: {
+                                    name: "",
+                                    units: 0,
+                                },
+                                back: {
+                                    name: "",
+                                    units: 0,
+                                },
+                            },
+                            pusoy: {
+                                mini: {
+                                    "1": 3,
+                                },
+                                full: 0,
+                            },
+                        },
+                    ],
+                ]),
+            ],
         ])("preprocessData %o should return %o", (preprocessData, expected) => {
             const actual = compareHands(new Map(), preprocessData);
 

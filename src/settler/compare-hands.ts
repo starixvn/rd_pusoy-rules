@@ -220,8 +220,8 @@ const calculatePusoy = (
             );
         }
 
-        pusoyScore1[player2Position] = score;
-        pusoyScore2[player1Position] = -score;
+        pusoyScore1[compareHandPlayerIds[player2Position]] = score;
+        pusoyScore2[compareHandPlayerIds[player1Position]] = -score;
     }
 
     return { pusoyScore1, pusoyScore2, pusoyMap };
@@ -306,33 +306,32 @@ const calculateFullPusoy = (
 };
 
 const getRoyalty = (
-    handScore1: Hand<SegmentScore>,
+    handScore: Hand<SegmentScore>,
     royalty: Hand<Record<string, number>>,
 ): Hand<RoyaltyUnit> => {
-    const frontUnits = royalty.front[HandTypeMap[handScore1.front.type]] || 0;
-    const middleUnits =
-        royalty.middle[HandTypeMap[handScore1.middle.type]] || 0;
-    const backUnits = royalty.back[HandTypeMap[handScore1.back.type]] || 0;
+    const frontUnits = royalty.front[HandTypeMap[handScore.front.type]] || 0;
+    const middleUnits = royalty.middle[HandTypeMap[handScore.middle.type]] || 0;
+    const backUnits = royalty.back[HandTypeMap[handScore.back.type]] || 0;
 
     return {
         front: {
             name:
                 frontUnits > 0
-                    ? HandTypeMap[handScore1.front.type]
+                    ? HandTypeMap[handScore.front.type]
                     : HandType.Unknown,
             units: frontUnits,
         },
         middle: {
             name:
                 middleUnits > 0
-                    ? HandTypeMap[handScore1.middle.type]
+                    ? HandTypeMap[handScore.middle.type]
                     : HandType.Unknown,
             units: middleUnits,
         },
         back: {
             name:
                 backUnits > 0
-                    ? HandTypeMap[handScore1.back.type]
+                    ? HandTypeMap[handScore.back.type]
                     : HandType.Unknown,
             units: backUnits,
         },
