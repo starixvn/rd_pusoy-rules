@@ -26,7 +26,12 @@ export const calculateNaturalAndCrack = (
             const {
                 player1Result: naturalResult1,
                 player2Result: naturalResult2,
-            } = settleNatural(naturalPlayers.get(i), naturalPlayers.get(j));
+            } = settleNatural(
+                naturalPlayers.get(i),
+                crackPlayers.has(i),
+                naturalPlayers.get(j),
+                crackPlayers.has(j),
+            );
             result = updateOrInsertSettleResultByNaturalAndCrack(
                 result,
                 oldResult1,
@@ -54,7 +59,9 @@ export const calculateNaturalAndCrack = (
 
 const settleNatural = (
     naturalScore1: NaturalScore | undefined,
+    player1Crack: boolean,
     naturalScore2: NaturalScore | undefined,
+    player2Crack: boolean,
 ): {
     player1Result: NaturalUnit;
     player2Result: NaturalUnit;
@@ -73,9 +80,9 @@ const settleNatural = (
             ? naturalScore1.units
             : -naturalScore2.units;
     } else if (naturalScore1) {
-        player1Result.units = naturalScore1.units;
+        player1Result.units = player2Crack ? 0 : naturalScore1.units;
     } else if (naturalScore2) {
-        player1Result.units = -naturalScore2.units;
+        player1Result.units = player1Crack ? 0 : -naturalScore2.units;
     }
 
     player2Result.units = -player1Result.units;

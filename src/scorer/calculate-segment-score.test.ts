@@ -8,7 +8,7 @@ describe("Scorer", () => {
         [[9, 8, 34, 44, 46], HandTypeMap[HandTypeRank.TwoPairs]],
         [[2, 14, 16, 17, 19], HandTypeMap[HandTypeRank.ThreeOfAKind]],
         [[2, 4, 50, 14, 8], HandTypeMap[HandTypeRank.Straight]],
-        [[12, 40, 28, 4, 16], HandTypeMap[HandTypeRank.Flush]],
+        [[47, 3, 11, 51, 147], HandTypeMap[HandTypeRank.Flush]],
         [[25, 26, 27, 20, 21], HandTypeMap[HandTypeRank.FullHouse]],
         [[25, 26, 27, 24, 21], HandTypeMap[HandTypeRank.FourOfAKind]],
         [[9, 13, 25, 21, 17], HandTypeMap[HandTypeRank.StraightFlush]],

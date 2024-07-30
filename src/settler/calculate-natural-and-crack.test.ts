@@ -42,7 +42,7 @@ describe(calculateNaturalAndCrack.name, () => {
                         crack: { isCrack: true, units: -9 },
                         natural: {
                             name: "",
-                            units: -6,
+                            units: 0,
                         },
                     },
                 ],
@@ -53,7 +53,7 @@ describe(calculateNaturalAndCrack.name, () => {
                         crack: { isCrack: false, units: 3 },
                         natural: {
                             name: "dragon",
-                            units: 3,
+                            units: 0,
                         },
                     },
                 ],
@@ -64,7 +64,7 @@ describe(calculateNaturalAndCrack.name, () => {
                         crack: { isCrack: false, units: 3 },
                         natural: {
                             name: "dragon",
-                            units: 9,
+                            units: 6,
                         },
                     },
                 ],
@@ -120,7 +120,7 @@ describe(calculateNaturalAndCrack.name, () => {
                         crack: { isCrack: false, units: 3 },
                         natural: {
                             name: "dragon",
-                            units: 24,
+                            units: 16,
                         },
                     },
                 ],
@@ -131,7 +131,7 @@ describe(calculateNaturalAndCrack.name, () => {
                         crack: { isCrack: false, units: 3 },
                         natural: {
                             name: "sixPairs",
-                            units: 2,
+                            units: -3,
                         },
                     },
                 ],
@@ -142,7 +142,7 @@ describe(calculateNaturalAndCrack.name, () => {
                         crack: { isCrack: true, units: -9 },
                         natural: {
                             name: "",
-                            units: -13,
+                            units: 0,
                         },
                     },
                 ],
