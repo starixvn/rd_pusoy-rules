@@ -20,7 +20,7 @@
         "reg": "npm set registry http://npm.lumigame.com",
         "betaver": "npm version prerelease --preid beta",
         "pub": "tsc & npm publish --registry https://npm.lumigame.com",
-        "pubbeta": "npm publish --registry https://npm.lumigame.com --tag beta",
+        "pubbeta": "tsc & npm publish --registry https://npm.lumigame.com --tag beta",
         "semantic-release": "semantic-release"
     },
     "keywords": [],
