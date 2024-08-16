@@ -1,8 +1,8 @@
-import { isLarger } from "../scorer";
+import { isLarger } from "../helper/card-helpers";
 import { Hand, SegmentScore } from "../types";
 
 export const isCrack = (handScore: Hand<SegmentScore>): boolean => {
-    if (isLarger(handScore.front, handScore.back)) {
+    if (isLarger(handScore.front, handScore.middle)) {
         return true;
     }
     if (isLarger(handScore.middle, handScore.back)) {

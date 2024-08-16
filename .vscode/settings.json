@@ -1,6 +1,8 @@
 {
     "explorer.fileNesting.patterns": {
         "package.json": "package-lock.json",
-        "*.ts": "$(capture).test.ts"
-    }
+        "*.ts": "$(capture).test.ts, $(capture).integration.test.ts"
+    },
+    "cSpell.words": ["cicd", "luminet", "pusoy"],
+    "prettier.tabWidth": 4
 }
