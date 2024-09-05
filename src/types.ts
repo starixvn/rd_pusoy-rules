@@ -60,3 +60,7 @@ export type ScoreConfig = {
         };
     };
 };
+
+export type InGameSettings = {
+    handsRejectNatural: number[];
+};
