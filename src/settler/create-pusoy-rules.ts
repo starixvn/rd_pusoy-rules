@@ -10,7 +10,7 @@ export const createPusoyRules = (scoreConfig: ScoreConfig) => {
          * @param {InGameSettings} inGameSettings - in-game settings
          * @return {Settlement[]} An array of settlements for each player
          */
-        settle: (playerData: Hand<number[]>[], inGameSettings: InGameSettings): Settlement[] => {
+        settle: (playerData: Hand<number[]>[], inGameSettings?: InGameSettings): Settlement[] => {
             return settle(playerData, scoreConfig, inGameSettings);
         },
     };

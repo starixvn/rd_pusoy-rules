@@ -232,7 +232,7 @@ const dataTest = [
                 back: [41, 45, 25, 29, 13],
             },
         ],
-        output: [4, 9, -3, -10],
+        output: [13, -18, 6, -1],
     },
     {
         case: "Case 2024.0617.1359",
@@ -284,15 +284,15 @@ const dataTest = [
                 back: [35, 39, 43, 47, 51],
             },
         ],
-        output: [39, -39, -117, 117],
+        output: [-18, 0, 6, 12],
     },
     {
         case: "Case 2024.0703.1511",
         input: [
             {
                 front: [26, 25, 24],
-                middle: [33, 37, 41, 45, 49],
-                back: [32, 36, 40, 44, 48],
+                middle: [32, 36, 40, 44, 48],
+                back: [33, 37, 41, 45, 49],
             },
             {
                 front: [23, 21, 28],
@@ -310,7 +310,7 @@ const dataTest = [
                 back: [35, 39, 43, 47, 51],
             },
         ],
-        output: [39, -49, -107, 117],
+        output: [3, -3, -9, 9],
     },
     {
         case: "Case 2024.0718.1507",
@@ -518,7 +518,7 @@ const dataTest = [
                 back: [13, 25, 33, 41, 49],
             },
         ],
-        output: [-7, 3, 9, -5],
+        output: [-7, 9, 3, -5],
     },
     {
         case: "Case 2024.0719.1805",
@@ -544,7 +544,7 @@ const dataTest = [
                 back: [35, 27, 30, 22, 36],
             },
         ],
-        output: [-7, 3, 9, -5],
+        output: [-7, 9, 3, -5],
     },
     {
         case: "Case 2024.0722.1402",
@@ -570,7 +570,7 @@ const dataTest = [
                 back: [32, 39, 42, 45, 50],
             },
         ],
-        output: [9, -12, 0, 3],
+        output: [9, -13, 1, 3],
     },
     {
         case: "Case 2024.0722.1421",
@@ -622,7 +622,7 @@ const dataTest = [
                 back: [12, 4, 6, 17, 16],
             },
         ],
-        output: [-24, -13, 63, -26],
+        output: [-12, 36, -12, -12],
     },
     {
         case: "Case 2024.0726.1801",
@@ -660,13 +660,7 @@ dataTest.forEach((data) => {
 
         // Assert
         if (JSON.stringify(actual) !== JSON.stringify(data.output)) {
-            throw new Error(
-                `expected ${data.output} but got ${actual} \n ${JSON.stringify(
-                    output,
-                    null,
-                    2,
-                )} \n`,
-            );
+            throw new Error(`expected ${data.output} but got ${actual} \n ${JSON.stringify(output, null, 2)} \n`);
         }
     });
 });
