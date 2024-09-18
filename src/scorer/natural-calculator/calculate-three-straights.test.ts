@@ -17,6 +17,13 @@ describe(calculateThreeStraights.name, () => {
                 back: [32, 36, 40, 43, 49],
             },
         ],
+        [
+            {
+                front: [43, 47, 51],
+                middle: [2, 6, 10, 12, 19],
+                back: [34, 38, 42, 46, 50],
+            },
+        ],
     ])("%j should be undefined", (hand) => {
         // Arrange
         const handScore = {

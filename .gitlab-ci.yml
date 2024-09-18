@@ -21,6 +21,20 @@ integration-test-settle:
         - npm run integration-test
     artifacts:
         when: always
+        paths:
+            - ./coverage
         reports:
             junit:
-                - junit.xml
+                - ./coverage/integration-tests.xml
+        expire_in: 1 day
+
+.unit_test_js:
+    artifacts:
+        when: always
+        paths:
+            - ./**/lcov.info
+            - ./coverage
+        reports:
+            junit:
+                - ./coverage/unit-tests.xml
+        expire_in: 1 day

@@ -1,8 +1,6 @@
 import { ScoreConfig } from "../src/types";
 import { createPusoyRules } from "../src/settler";
 import { Natural } from "../src/const";
-import { strictEqual } from "assert";
-import { assert } from "console";
 
 const scoreConfig: ScoreConfig = {
     normal: 1,
@@ -652,15 +650,24 @@ const dataTest = [
     },
 ];
 
-dataTest.forEach((data) => {
-    test(`${data.case}`, () => {
-        // Act
-        const output = pusoy.settle(data.input);
-        const actual = output.map((s) => s.sum);
+describe("Pusoy Settle Tests", () => {
+    dataTest.forEach(({ case: caseName, input, output }) => {
+        test(caseName, () => {
+            // Act
+            const result = pusoy.settle(input);
+            const actual = result.map((s) => s.sum);
 
-        // Assert
-        if (JSON.stringify(actual) !== JSON.stringify(data.output)) {
-            throw new Error(`expected ${data.output} but got ${actual} \n ${JSON.stringify(output, null, 2)} \n`);
-        }
+            // Assert
+            try {
+                expect(actual).toEqual(output);
+
+                // Log success details
+                console.info(`Test passed for ${caseName}`);
+                console.info(`Result data: ${JSON.stringify(result, null, 2)}`);
+            } catch (error) {
+                error.message = `expected ${output} but got ${actual} \n ${JSON.stringify(result, null, 2)} \n`;
+                throw error;
+            }
+        });
     });
 });

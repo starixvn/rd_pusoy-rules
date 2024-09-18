@@ -13,8 +13,8 @@
     "type": "commonjs",
     "scripts": {
         "dev": "tsx src/index.ts",
-        "test-coverage": "jest --coverage --testPathIgnorePatterns=tests",
-        "integration-test": "jest --config=jest.integration.config.json --testPathPattern=tests/",
+        "test-coverage": "jest --config=jest.config.json --coverage --testPathIgnorePatterns=tests",
+        "integration-test": "jest --config=jest.integration.config.json --verbose=false --testPathPattern=tests/",
         "build": "tsc",
         "lint": "eslint .",
         "reg": "npm set registry http://npm.lumigame.com",
