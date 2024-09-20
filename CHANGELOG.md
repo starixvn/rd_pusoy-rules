@@ -1,3 +1,10 @@
+# [1.1.0](https://git3.nexdev.net/rd/pusoy-rules/compare/v1.0.0...v1.1.0) (2024-09-20)
+
+
+### Features
+
+* reject natural ([8ef0ae7](https://git3.nexdev.net/rd/pusoy-rules/commit/8ef0ae738b9861675f916bc65ebf906cab22c5ba))
+
 # 1.0.0 (2024-08-16)
 
 
