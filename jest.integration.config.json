@@ -1,15 +1,17 @@
 {
+    "coverageReporters": ["clover", "lcov", "text-summary", "cobertura"],
     "reporters": [
         [
             "jest-html-reporters",
             {
                 "pageTitle": "Integration Test Report",
                 "publicPath": "./reports",
-                "filename": "report.html",
+                "filename": "integration-tests-report.html",
                 "openReport": false,
-                "inlineSource": true
+                "inlineSource": true,
+                "includeConsoleLog": true
             }
         ],
-        "jest-junit"
+        ["jest-junit", { "outputDirectory": "coverage", "outputName": "integration-tests.xml" }]
     ]
 }
