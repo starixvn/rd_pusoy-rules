@@ -1,3 +1,10 @@
+## [1.1.1](https://git3.nexdev.net/rd/pusoy-rules/compare/v1.1.0...v1.1.1) (2024-09-23)
+
+
+### Bug Fixes
+
+* update gitlab ci ([5ced780](https://git3.nexdev.net/rd/pusoy-rules/commit/5ced7802ccff6c825c782b943087e1822e35cf0b))
+
 # [1.1.0](https://git3.nexdev.net/rd/pusoy-rules/compare/v1.0.0...v1.1.0) (2024-09-20)
 
 
