@@ -1,3 +1,10 @@
+# [1.2.0](https://git3.nexdev.net/rd/pusoy-rules/compare/v1.1.1...v1.2.0) (2024-09-23)
+
+
+### Features
+
+* update gitlab ci, enable NPM_LANG_TS ([933ac2f](https://git3.nexdev.net/rd/pusoy-rules/commit/933ac2f003f61dbc1afbdc07612564f407e6b18e))
+
 ## [1.1.1](https://git3.nexdev.net/rd/pusoy-rules/compare/v1.1.0...v1.1.1) (2024-09-23)
 
 
