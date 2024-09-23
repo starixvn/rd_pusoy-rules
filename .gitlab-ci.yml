@@ -4,6 +4,7 @@ variables:
     ENABLE_TEST_JS: "true"
     SRC_PATH: src
     PUBLISH_NPM: "true"
+    NPM_LANG_TS: "true"
 
 include:
     - project: ci/core-cicd
