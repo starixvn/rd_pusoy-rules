@@ -17,6 +17,21 @@ describe(calculateThreeFlushes.name, () => {
                 back: [32, 36, 40, 43, 49],
             },
         ],
+        [{ front: [0, 4, 8], middle: [5, 37, 9, 45, 49], back: [12, 16, 20, 24, 28] }],
+        [
+            {
+                front: [10, 2, 26],
+                middle: [9, 21, 41, 29, 25],
+                back: [23, 27, 31, 35, 39],
+            },
+        ],
+        [
+            {
+                front: [2, 26, 10],
+                middle: [44, 32, 36, 40, 48],
+                back: [34, 38, 42, 46, 50],
+            },
+        ],
     ])("%j should be undefined", (hand) => {
         // Arrange
         const handScore = {
@@ -31,6 +46,7 @@ describe(calculateThreeFlushes.name, () => {
         // Assert
         expect(actual).toBe(undefined);
     });
+
     test.each([
         [
             {
@@ -51,28 +67,6 @@ describe(calculateThreeFlushes.name, () => {
             },
             {
                 rank: 366333,
-                suit: 2,
-            },
-        ],
-        [
-            {
-                front: [10, 2, 26],
-                middle: [9, 21, 41, 29, 25],
-                back: [23, 27, 31, 35, 39],
-            },
-            {
-                rank: 9,
-                suit: 3,
-            },
-        ],
-        [
-            {
-                front: [2, 26, 10],
-                middle: [44, 32, 36, 40, 48],
-                back: [34, 38, 42, 46, 50],
-            },
-            {
-                rank: 12,
                 suit: 2,
             },
         ],
