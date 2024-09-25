@@ -1,3 +1,10 @@
+## [1.2.1](https://git3.nexdev.net/rd/pusoy-rules/compare/v1.2.0...v1.2.1) (2024-09-25)
+
+
+### Bug Fixes
+
+* check straight & natural straight flush ignore ([e637e5a](https://git3.nexdev.net/rd/pusoy-rules/commit/e637e5a5fee1961ef38ac28a62c80b5b8b1d800b))
+
 # [1.2.0](https://git3.nexdev.net/rd/pusoy-rules/compare/v1.1.1...v1.2.0) (2024-09-23)
 
 
