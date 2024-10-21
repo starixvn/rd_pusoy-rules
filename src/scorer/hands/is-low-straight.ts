@@ -5,5 +5,5 @@ export const isLowStraight = (sortedRanks: number[]) => {
 
     const lowStraight = [...Array(sortedRanks.length - 1).keys(), 12];
 
-    return JSON.stringify(lowStraight) == JSON.stringify(sortedRanks);
+    return JSON.stringify(lowStraight) === JSON.stringify(sortedRanks);
 };

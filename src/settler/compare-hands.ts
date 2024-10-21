@@ -35,12 +35,16 @@ export const compareHands = (
     const compareHandPlayerIds = Array.from(compareHandPlayers.keys());
     for (let i = 0; i < compareHandPlayerIds.length - 1; i++) {
         for (let j = i + 1; j < compareHandPlayerIds.length; j++) {
-            const player1 = compareHandPlayers.get(compareHandPlayerIds[i])!;
-            const player2 = compareHandPlayers.get(compareHandPlayerIds[j])!;
+            const player1 = compareHandPlayers.get(
+                compareHandPlayerIds[i],
+            ) as Hand<SegmentScore>;
+            const player2 = compareHandPlayers.get(
+                compareHandPlayerIds[j],
+            ) as Hand<SegmentScore>;
 
-            const front = isLarger(player1.front, player2.front) ? 1 : -1;
-            const middle = isLarger(player1.middle, player2.middle) ? 1 : -1;
-            const back = isLarger(player1.back, player2.back) ? 1 : -1;
+            const front = getNormalScore(player1.front, player2.front);
+            const middle = getNormalScore(player1.middle, player2.middle);
+            const back = getNormalScore(player1.back, player2.back);
 
             const {
                 pusoyScore1,
@@ -279,10 +283,10 @@ const calculateFullPusoy = (
             });
 
             for (const other of value) {
-                const oldResult = result.get(other);
+                const oldResult = result.get(other) as Settlement;
                 const fullPusoyScore = scoreConfig.pusoy.full.isWinnerTakeAll
                     ? -scoreConfig.pusoy.full.units +
-                      Object.entries(oldResult!.pusoy.mini)
+                      Object.entries(oldResult.pusoy.mini)
                           .filter(([k]) => k !== key.toString())
                           .map(([, v]) => v)
                           .reduce((a, b) => a + b, 0)
@@ -292,7 +296,7 @@ const calculateFullPusoy = (
                     ...oldResult,
                     pusoy: {
                         mini: {
-                            ...oldResult!.pusoy.mini,
+                            ...oldResult.pusoy.mini,
                             [key]: 0,
                         },
                         full: fullPusoyScore,
@@ -336,4 +340,11 @@ const getRoyalty = (
             units: backUnits,
         },
     };
+};
+
+const getNormalScore = (
+    player1Score: SegmentScore,
+    player2Score: SegmentScore,
+) => {
+    return isLarger(player1Score, player2Score) ? 1 : -1;
 };

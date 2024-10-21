@@ -1,6 +1,9 @@
 import { isLowStraight } from "./is-low-straight";
 
-export const isStraight = (sortedRanks: number[], includeWheelStraight: boolean = false) => {
+export const isStraight = (
+    sortedRanks: number[],
+    includeWheelStraight = false,
+) => {
     if (sortedRanks.length < 3) {
         return false;
     }

@@ -14,7 +14,7 @@ export const calculateSixPairs = (
             ...(sameRankCounter.get(3) ?? []),
             ...(sameRankCounter.get(4) ?? []),
         );
-        const maxSuit = Math.max(...rankMap.get(maxCard)!);
+        const maxSuit = Math.max(...(rankMap.get(maxCard) ?? []));
         return {
             rank: maxCard,
             suit: maxSuit,

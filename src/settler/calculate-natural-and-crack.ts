@@ -76,7 +76,7 @@ const settleNatural = (
     };
 
     if (naturalScore1 && naturalScore2) {
-        player1Result.units = isLarger(naturalScore1!, naturalScore2!)
+        player1Result.units = isLarger(naturalScore1, naturalScore2)
             ? naturalScore1.units
             : -naturalScore2.units;
     } else if (naturalScore1) {
@@ -122,14 +122,14 @@ const updateOrInsertSettleResultByNaturalAndCrack = (
         return newResult;
     }
     newResult.set(position, {
-        ...oldResult!,
+        ...oldResult,
         crack: {
-            ...oldResult!.crack,
+            ...oldResult.crack,
             units: crackScore,
         },
         natural: {
             name: naturalResult.name,
-            units: oldResult!.natural.units + naturalResult.units,
+            units: oldResult.natural.units + naturalResult.units,
         },
     });
 

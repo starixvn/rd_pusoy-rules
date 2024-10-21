@@ -1,5 +1,6 @@
 {
     "coverageReporters": ["clover", "lcov", "text-summary", "cobertura"],
+    "resetMocks": true,
     "reporters": [
         [
             "jest-html-reporters",
@@ -12,6 +13,9 @@
                 "includeConsoleLog": true
             }
         ],
-        ["jest-junit", { "outputDirectory": "coverage", "outputName": "unit-tests.xml" }]
+        [
+            "jest-junit",
+            { "outputDirectory": "coverage", "outputName": "unit-tests.xml" }
+        ]
     ]
 }
